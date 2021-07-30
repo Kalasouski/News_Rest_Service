@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/MavenWrapperDownloader.java
+demo/news-rest-service/.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
