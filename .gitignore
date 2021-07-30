@@ -108,3 +108,8 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,maven
+demo/news-rest-service/mvnw.cmd
+demo/news-rest-service/mvnw
+demo/news-rest-service/.mvn/wrapper/maven-wrapper.properties
+demo/news-rest-service/.mvn/wrapper/maven-wrapper.jar
+.DS_Store
