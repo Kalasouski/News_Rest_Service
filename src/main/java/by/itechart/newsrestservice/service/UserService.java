@@ -14,15 +14,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    User findById(Long id) {
+    public User findById(Long id) {
         return userRepository.getById(id);
     }
 
-    User save(User user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 
-    User findByUsername(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

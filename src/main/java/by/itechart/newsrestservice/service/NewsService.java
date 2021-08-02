@@ -17,7 +17,7 @@ public class NewsService {
         this.newsRepository = newsRepository;
     }
 
-    News findById(Long id) {
+    public News findById(Long id) {
         return newsRepository.getById(id);
     }
 
@@ -25,11 +25,11 @@ public class NewsService {
         return newsRepository.findAll();
     }
 
-    List<News> findByCategory(NewsCategory category) {
+    public List<News> findByCategory(NewsCategory category) {
         return newsRepository.findByCategory(category);
     }
 
-    News save(News news) {
+    public News save(News news) {
         return newsRepository.save(news);
     }
 }
