@@ -25,4 +25,8 @@ public class NewsServiceImpl {
     public List<News> findAll() {
         return newsRepository.findAll();
     }
+
+    List<News> findByCategory(NewsCategory category) {
+        return newsRepository.findByCategory(category);
+    }
 }
