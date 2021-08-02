@@ -15,6 +15,7 @@ public class UserController {
         this.userService = userService;
     }
 
+
     @GetMapping("/{id}")
     @ResponseBody
     public User getUserById(@PathVariable("id") String id) throws Exception {
@@ -29,5 +30,5 @@ public class UserController {
         }
         return userService.findById(parsedId);
     }
-
+  
 }
