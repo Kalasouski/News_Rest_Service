@@ -1,12 +1,28 @@
 package by.itechart.newsrestservice.service;
 
 import by.itechart.newsrestservice.entity.User;
+import by.itechart.newsrestservice.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public interface UserService {
+@Service
+public class UserService {
+    private final UserRepository userRepository;
 
-    User findById(Long id);
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    User save(User user);
+    User findById(Long id) {
+        return userRepository.getById(id);
+    }
 
-    User findByUsername(String username);
+    User save(User user) {
+        return userRepository.save(user);
+    }
+
+    User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
