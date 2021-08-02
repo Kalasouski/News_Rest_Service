@@ -18,6 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
+
     @GetMapping("/{id}")
     public User getUserById(@PathVariable("id") String id) throws Exception {
         if (id == null) {
@@ -26,5 +27,5 @@ public class UserController {
         Long parsedId = Long.parseLong(id);
         return userService.findById(parsedId);
     }
-
+  
 }
