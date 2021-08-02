@@ -3,10 +3,7 @@ package by.itechart.newsrestservice.controller;
 import by.itechart.newsrestservice.entity.User;
 import by.itechart.newsrestservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -20,11 +17,17 @@ public class UserController {
 
 
     @GetMapping("/{id}")
+    @ResponseBody
     public User getUserById(@PathVariable("id") String id) throws Exception {
-        if (id == null) {
-            throw new Exception("Field ID can't be null!");
+        if (id == null || id.isEmpty()) {
+            throw new Exception("Field ID can't be empty!");
         }
-        Long parsedId = Long.parseLong(id);
+        Long parsedId = null;
+        try {
+            parsedId = Long.parseLong(id);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
         return userService.findById(parsedId);
     }
   
