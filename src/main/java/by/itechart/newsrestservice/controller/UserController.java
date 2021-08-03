@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class UserController {
     private final UserService userService;
@@ -16,12 +18,12 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    
+
     @GetMapping("/user/{id}")
     @ResponseBody
     public User getUserById(@PathVariable("id") String id) {
         long userId;
-        try{
+        try {
             userId = Long.parseLong(id);
         } catch (NumberFormatException e) {
             throw new InvalidIdException(e);
@@ -36,6 +38,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
+    @GetMapping("/user/all")
+    @ResponseBody
+    public List<User> getAllUsers() {
+        return userService.findAllUsers();
+    }
 
-  
 }
