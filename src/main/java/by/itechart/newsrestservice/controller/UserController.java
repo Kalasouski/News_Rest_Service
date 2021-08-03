@@ -19,7 +19,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/user/id/{id}")
     @ResponseBody
     public User getUserById(@PathVariable("id") String id) {
         long userId;
@@ -42,6 +42,18 @@ public class UserController {
     @ResponseBody
     public List<User> getAllUsers() {
         return userService.findAllUsers();
+    }
+
+    @GetMapping("/user/name/{username}")
+    @ResponseBody
+    public User getUserByUsername(@PathVariable("username") String username) throws Exception {
+        if (username == null || username.isEmpty() || username.isBlank()) {
+            throw new NullPointerException("Field username can't be null!");
+        }
+        if (userService.findByUsername(username) == null) {
+            throw new Exception("User with this username is not found!");
+        }
+        return userService.findByUsername(username);
     }
 
 }
