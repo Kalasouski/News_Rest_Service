@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -21,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/id/{id}")
+    @GetMapping("/id/{id}")
     @ResponseBody
     public User getUserById(@PathVariable("id") String id) {
         long userId;
@@ -39,13 +40,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
-    @GetMapping("/user/all")
+    @GetMapping("/all")
     @ResponseBody
     public List<User> getAllUsers() {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/user/name/{username}")
+    @GetMapping("/name/{username}")
     @ResponseBody
     public User getUserByUsername(@PathVariable("username") String username) {
         if (username == null || username.isEmpty() || username.isBlank()) {
