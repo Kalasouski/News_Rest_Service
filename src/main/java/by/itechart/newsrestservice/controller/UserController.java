@@ -2,6 +2,8 @@ package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.entity.User;
 import by.itechart.newsrestservice.exceptions.InvalidIdException;
+import by.itechart.newsrestservice.exceptions.InvalidUsernameException;
+import by.itechart.newsrestservice.exceptions.UserException;
 import by.itechart.newsrestservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,12 +31,11 @@ public class UserController {
             throw new InvalidIdException(e);
         }
         return userService.findById(userId);
-
     }
 
-    @ExceptionHandler(InvalidIdException.class)
+    @ExceptionHandler(UserException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleInvalidIdException(InvalidIdException exception) {
+    public ResponseEntity<String> handleUserException(UserException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
@@ -46,12 +47,12 @@ public class UserController {
 
     @GetMapping("/user/name/{username}")
     @ResponseBody
-    public User getUserByUsername(@PathVariable("username") String username) throws Exception {
+    public User getUserByUsername(@PathVariable("username") String username) {
         if (username == null || username.isEmpty() || username.isBlank()) {
             throw new NullPointerException("Field username can't be null!");
         }
         if (userService.findByUsername(username) == null) {
-            throw new Exception("User with this username is not found!");
+            throw new InvalidUsernameException("Can't find user with this username");
         }
         return userService.findByUsername(username);
     }
