@@ -1,22 +1,18 @@
 package by.itechart.newsrestservice.controller;
 
-import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
-import by.itechart.newsrestservice.entity.User;
-import by.itechart.newsrestservice.exceptions.InvalidIdException;
+import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
 import by.itechart.newsrestservice.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/news")
@@ -26,6 +22,12 @@ public class NewsController {
     @Autowired
     public NewsController(NewsService newsService) {
         this.newsService = newsService;
+    }
+
+    @ExceptionHandler(InvalidInputFieldException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleNewsException(InvalidInputFieldException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @GetMapping
@@ -44,13 +46,13 @@ public class NewsController {
     public News getNewsById(@PathVariable("id") String id) throws Exception {
         long parsedId;
         if (id == null || id.isEmpty() || id.isBlank()) {
-            throw new Exception("Field id can't be empty!");
+            throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field ID can't be empty!");
         }
 
         try {
             parsedId = Long.parseLong(id);
         } catch (NumberFormatException e) {
-            throw new Exception("Invalid id!");
+            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Type mismatch in field(s)!", e);
         }
         return newsService.findById(parsedId);
     }
@@ -60,13 +62,13 @@ public class NewsController {
     public List<News> getNewsByCategory(@PathVariable("category") String category) throws Exception {
         List<News> newsByCategory;
         if (category == null || category.isBlank() || category.isEmpty()) {
-            throw new Exception("Field category can't be empty!");
+            throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field category can't be empty!");
         }
 
         try {
             newsByCategory = newsService.findByCategory(NewsCategory.valueOf(category.toUpperCase()));
         } catch (IllegalArgumentException e) {
-            throw new Exception("Invalid category!");
+            throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Invalid category!");
         }
         return newsByCategory;
     }
