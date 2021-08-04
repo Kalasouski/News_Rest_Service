@@ -30,7 +30,11 @@ public class UserController {
         } catch (NumberFormatException e) {
             throw new InvalidInputFieldException("Incorrect format of field(s)! ", e);
         }
-        return userService.findById(userId);
+        User user = userService.findById(userId);
+        if (user == null) {
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
+        }
+        return user;
     }
 
     @ExceptionHandler(InvalidInputFieldException.class)
@@ -51,10 +55,11 @@ public class UserController {
         if (username == null || username.isEmpty() || username.isBlank()) {
             throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Field username can't be null!");
         }
-        if (userService.findByUsername(username) == null) {
+        User user = userService.findByUsername(username);
+        if (user == null) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
         }
-        return userService.findByUsername(username);
+        return user;
     }
 
 }
