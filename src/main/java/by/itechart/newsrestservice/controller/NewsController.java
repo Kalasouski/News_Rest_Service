@@ -1,5 +1,7 @@
 package by.itechart.newsrestservice.controller;
 
+import by.itechart.newsrestservice.dto.NewsComment;
+import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/news")
@@ -25,8 +28,9 @@ public class NewsController {
     }
 
     @ExceptionHandler(InvalidInputFieldException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleNewsException(InvalidInputFieldException exception) {
-        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @GetMapping
@@ -68,5 +72,10 @@ public class NewsController {
         } catch (IllegalArgumentException e) {
             throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Invalid category!");
         }
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<NewsComment> getNewsCommentsByUserId(@PathVariable("id") String id) {
+        return this.getNewsById(id).getComments().stream().map(NewsComment::provideNewsComment).collect(Collectors.toList());
     }
 }
