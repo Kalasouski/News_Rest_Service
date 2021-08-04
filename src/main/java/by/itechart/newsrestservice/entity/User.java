@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
