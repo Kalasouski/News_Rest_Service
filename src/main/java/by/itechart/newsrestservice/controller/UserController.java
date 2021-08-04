@@ -62,22 +62,7 @@ public class UserController {
 
     @GetMapping("/{id}/comments")
     public List<Comment> getUserCommentsByUserId(@PathVariable("id") String id) {
-        long userId;
-        try {
-            userId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputFieldException("Incorrect format of field(s)! ", e);
-        }
-
-        User user = userService.findById(userId);
-        if (user == null) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
-        }
-
-        if (user.getComments().isEmpty()) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find comments of this user");
-        }
-        return user.getComments();
+        return this.getUserById(id).getComments();
     }
 
 }
