@@ -25,9 +25,8 @@ public class NewsController {
     }
 
     @ExceptionHandler(InvalidInputFieldException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleNewsException(InvalidInputFieldException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
     }
 
     @GetMapping
