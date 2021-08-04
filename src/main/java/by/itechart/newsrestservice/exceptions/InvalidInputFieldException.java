@@ -6,15 +6,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class InvalidInputFieldException extends ResponseStatusException {
 
     public InvalidInputFieldException(HttpStatus status) {
-        super(HttpStatus.BAD_REQUEST);
+        super(status);
     }
 
     public InvalidInputFieldException(HttpStatus status, String s) {
-        super(HttpStatus.BAD_REQUEST, s);
-    }
-
-    public InvalidInputFieldException(String s, Exception e) {
-        super(HttpStatus.BAD_REQUEST, s, e);
+        super(status, s);
     }
 
     public InvalidInputFieldException(HttpStatus status, String s, Exception e) {

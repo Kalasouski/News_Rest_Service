@@ -22,25 +22,24 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ExceptionHandler(InvalidInputFieldException.class)
+    public ResponseEntity<String> handleUserException(InvalidInputFieldException exception) {
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
     @GetMapping("/id/{id}")
     public User getUserById(@PathVariable("id") String id) {
         long userId;
         try {
             userId = Long.parseLong(id);
         } catch (NumberFormatException e) {
-            throw new InvalidInputFieldException("Incorrect format of field(s)! ", e);
+            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Incorrect format of field(s)! ", e);
         }
         User user = userService.findById(userId);
         if (user == null) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
         }
         return user;
-    }
-
-    @ExceptionHandler(InvalidInputFieldException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleUserException(InvalidInputFieldException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @GetMapping("/all")
