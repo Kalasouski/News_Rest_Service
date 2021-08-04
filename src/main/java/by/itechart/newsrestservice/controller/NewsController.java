@@ -31,7 +31,6 @@ public class NewsController {
     }
 
     @GetMapping
-    @ResponseBody
     public Map<Integer, String> getNewsHeadings() {
         Map<Integer, String> headers = new HashMap<>();
         List<News> news = newsService.findAll();
@@ -42,7 +41,6 @@ public class NewsController {
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
     public News getNewsById(@PathVariable("id") String id) {
         News news = newsService.findById(checkId(id));
         if (news == null)
@@ -62,7 +60,6 @@ public class NewsController {
     }
 
     @GetMapping("/category/{category}")
-    @ResponseBody
     public List<News> getNewsByCategory(@PathVariable("category") String category) {
         if (category == null || category.isBlank() || category.isEmpty()) {
             throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field category can't be empty!");

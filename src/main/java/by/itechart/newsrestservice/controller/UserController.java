@@ -22,7 +22,6 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    @ResponseBody
     public User getUserById(@PathVariable("id") String id) {
         long userId;
         try {
@@ -44,13 +43,11 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    @ResponseBody
     public List<User> getAllUsers() {
         return userService.findAllUsers();
     }
 
     @GetMapping("/name/{username}")
-    @ResponseBody
     public User getUserByUsername(@PathVariable("username") String username) {
         if (username == null || username.isEmpty() || username.isBlank()) {
             throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Field username can't be null!");
