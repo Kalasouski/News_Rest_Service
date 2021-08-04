@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.controller;
 
+import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.User;
 import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
 import by.itechart.newsrestservice.exceptions.NotFoundException;
@@ -57,6 +58,26 @@ public class UserController {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
         }
         return user;
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<Comment> getUserCommentsByUserId(@PathVariable("id") String id) {
+        long userId;
+        try {
+            userId = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            throw new InvalidInputFieldException("Incorrect format of field(s)! ", e);
+        }
+
+        User user = userService.findById(userId);
+        if (user == null) {
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
+        }
+
+        if (user.getComments().isEmpty()) {
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find comments of this user");
+        }
+        return user.getComments();
     }
 
 }
