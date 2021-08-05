@@ -14,17 +14,13 @@ public class UserDetailsImpl implements UserDetails {
     private final Long id;
     private final String username;
     private final String password;
-    private final String firstName;
-    private final String lastName;
     private final List<SimpleGrantedAuthority> authorities;
     private final boolean isActive;
 
-    public UserDetailsImpl(Long id, String username, String password, String firstName, String lastName, List<SimpleGrantedAuthority> authorities, boolean isActive) {
+    public UserDetailsImpl(Long id, String username, String password, List<SimpleGrantedAuthority> authorities, boolean isActive) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.authorities = authorities;
         this.isActive = isActive;
     }
@@ -46,14 +42,6 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     @Override

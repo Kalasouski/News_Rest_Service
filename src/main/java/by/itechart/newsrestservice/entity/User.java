@@ -31,7 +31,7 @@ public class User {
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private Role status;
+    private Status status;
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;

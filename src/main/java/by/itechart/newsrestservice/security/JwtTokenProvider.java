@@ -11,6 +11,7 @@ import by.itechart.newsrestservice.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +31,9 @@ public class JwtTokenProvider {
     private String secret;
 
     @Value("${jwt.token.expired}")
-    private long validityTime;
+    private long expirationTime;
 
+    private final static String TOKEN_PREFIX = "Bearer_";
     private final UserDetailsService userDetailsServiceImpl;
 
     @Autowired
@@ -49,13 +51,10 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username, Role role) {
+    public String createToken(String username) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("role", role.name());
-
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityTime);
-
+        Date validity = new Date(now.getTime() + expirationTime);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
@@ -74,8 +73,8 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer_")) {
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (token != null && token.startsWith(TOKEN_PREFIX)) {
             return token.substring(7);
         }
         return null;
