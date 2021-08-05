@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,7 @@ public class News {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "news")
     private List<Comment> comments;
 }

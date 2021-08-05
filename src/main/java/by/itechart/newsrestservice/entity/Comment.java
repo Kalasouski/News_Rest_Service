@@ -1,5 +1,7 @@
 package by.itechart.newsrestservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,11 +18,14 @@ public class Comment {
 
     private String comment;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="news_id")
     private News news;
+
 }

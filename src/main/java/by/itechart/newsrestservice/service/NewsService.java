@@ -18,7 +18,7 @@ public class NewsService {
     }
 
     public News findById(Long id) {
-        return newsRepository.getById(id);
+        return newsRepository.findById(id).orElse(null);
     }
 
     public List<News> findAll() {
