@@ -32,6 +32,10 @@ public class User {
     @Column(name = "role")
     private Role role;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
