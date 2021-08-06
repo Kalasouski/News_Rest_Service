@@ -35,32 +35,18 @@ public class NewsController {
 
     @GetMapping
     public Map<Integer, String> getNewsHeadings() {
-        Map<Integer, String> headers = new HashMap<>();
-        List<News> news = newsService.findAll();
-        for (int i = 0; i < news.size(); i++) {
-            headers.put(i + 1, news.get(i).getHeading());
-        }
-        return headers;
+        return newsService.getNewsHeadings();
     }
 
     @GetMapping("/{id}")
     public News getNewsById(@PathVariable("id") String id) {
-        News news = newsService.findById(checkId(id));
+        News news = newsService.findById(id);
         if (news == null)
             throw new NotFoundException(HttpStatus.NOT_FOUND, "No news with such id");
         return news;
     }
 
-    private Long checkId(String id) {
-        if (id == null || id.isEmpty() || id.isBlank()) {
-            throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field ID can't be empty!");
-        }
-        try {
-            return Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Type mismatch in field(s)!", e);
-        }
-    }
+
 
     @GetMapping("/category/{category}")
     public List<News> getNewsByCategory(@PathVariable("category") String category) {
