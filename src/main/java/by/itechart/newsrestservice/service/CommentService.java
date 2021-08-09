@@ -25,7 +25,7 @@ public class CommentService {
 
         comment.setComment(commentText);
         comment.setNews(news);
-        comment.setUser(userService.getCurrentUserUsername());
+        comment.setUser(userService.getCurrentUserByUsername());
 
         commentsRepository.save(comment);
         return true;
@@ -33,7 +33,7 @@ public class CommentService {
     }
 
     public boolean removeComment(Long commentId) {
-        commentsRepository.deleteCommentById(commentId);
+        commentsRepository.deleteById(commentId);
         return true;
     }
 
