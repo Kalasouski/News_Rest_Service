@@ -1,8 +1,12 @@
 package by.itechart.newsrestservice.service;
 
 import by.itechart.newsrestservice.entity.User;
+import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,5 +34,15 @@ public class UserService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public User getCurrentUserUsername() {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        String username = loggedInUser.getName();
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username!");
+        }
+        return user;
     }
 }

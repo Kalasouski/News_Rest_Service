@@ -1,18 +1,17 @@
 package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.NewsComment;
-import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
 import by.itechart.newsrestservice.exceptions.NotFoundException;
+import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,10 +20,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/news")
 public class NewsController {
     private final NewsService newsService;
+    private final CommentService commentService;
 
     @Autowired
-    public NewsController(NewsService newsService) {
+    public NewsController(NewsService newsService, CommentService commentService) {
         this.newsService = newsService;
+        this.commentService = commentService;
     }
 
     @ExceptionHandler(InvalidInputFieldException.class)
@@ -47,7 +48,6 @@ public class NewsController {
     }
 
 
-
     @GetMapping("/category/{category}")
     public List<News> getNewsByCategory(@PathVariable("category") String category) {
         if (category == null || category.isBlank() || category.isEmpty()) {
@@ -63,5 +63,12 @@ public class NewsController {
     @GetMapping("/{id}/comments")
     public List<NewsComment> getNewsCommentsByUserId(@PathVariable("id") String id) {
         return this.getNewsById(id).getComments().stream().map(NewsComment::provideNewsComment).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{id}/comments")
+    public News postCommentToNews(@PathVariable("id") String id, @RequestBody String comment) {
+        News news = newsService.findById(id);
+        commentService.addComment(id, comment);
+        return news;
     }
 }
