@@ -39,7 +39,7 @@ public class NewsService {
     }
 
 
-    private Long checkId(String id) {
+    public Long checkId(String id) {
         if (id == null || id.isEmpty() || id.isBlank()) {
             throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field ID can't be empty!");
         }

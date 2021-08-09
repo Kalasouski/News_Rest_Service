@@ -31,4 +31,5 @@ public class News {
     @JsonManagedReference
     @OneToMany(mappedBy = "news")
     private List<Comment> comments;
+
 }
