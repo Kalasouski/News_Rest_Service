@@ -36,7 +36,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getCurrentUserUsername() {
+    public User getCurrentUserByUsername() {
         Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
         String username = loggedInUser.getName();
         User user = userRepository.findByUsername(username);
