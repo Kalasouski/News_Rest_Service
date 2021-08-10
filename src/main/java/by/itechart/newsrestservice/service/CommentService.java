@@ -25,7 +25,7 @@ public class CommentService {
 
         comment.setComment(commentText);
         comment.setNews(news);
-        comment.setUser(userService.getCurrentUserUsername());
+        comment.setUser(userService.getCurrentUserByUsername());
 
         commentsRepository.save(comment);
         return true;
