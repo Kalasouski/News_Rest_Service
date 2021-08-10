@@ -32,9 +32,9 @@ public class CommentService {
 
     }
 
-    public boolean removeComment(Long commentId) {
-        commentsRepository.deleteById(commentId);
-        return true;
+    public void deleteCommentById(Long id) {
+        commentsRepository.deleteById(id);
     }
+
 
 }

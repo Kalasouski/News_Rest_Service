@@ -1,6 +1,7 @@
 package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.NewsComment;
+import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
@@ -69,6 +70,14 @@ public class NewsController {
     public News postCommentToNews(@PathVariable("id") String id, @RequestBody String comment) {
         News news = newsService.findById(id);
         commentService.addComment(id, comment);
+        return news;
+    }
+
+    @DeleteMapping("/{news_id}/comments/{comment_id}")
+    public News deleteCommentToNewsById(@PathVariable("news_id") String newsId,@PathVariable("comment_id") String commentId) {
+        News news = this.getNewsById(newsId);
+        Comment toDelete = newsService.getNewsCommentById(news,commentId);
+        commentService.deleteCommentById(toDelete.getId());
         return news;
     }
 }
