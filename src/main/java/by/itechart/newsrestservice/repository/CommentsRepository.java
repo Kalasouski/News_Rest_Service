@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface CommentsRepository extends JpaRepository<Comment, Long> {
-    Comment save(Comment comment);
+
 }
