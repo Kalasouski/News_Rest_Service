@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -27,7 +26,7 @@ public class UserController {
         return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/users/{id}")
     public User getUserById(@PathVariable("id") String id) {
         long userId;
         try {
@@ -42,26 +41,13 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/name/{username}")
-    public User getUserByUsername(@PathVariable("username") String username) {
-        if (username == null || username.isEmpty() || username.isBlank()) {
-            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Field username can't be null!");
-        }
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
-        }
-        return user;
-    }
-
-    @GetMapping("/{id}/comments")
+    @GetMapping("/users/{id}/comments")
     public List<Comment> getUserCommentsByUserId(@PathVariable("id") String id) {
         return this.getUserById(id).getComments();
     }
-
 }
