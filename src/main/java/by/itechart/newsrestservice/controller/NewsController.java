@@ -36,18 +36,18 @@ public class NewsController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
-    @GetMapping
+    /*@GetMapping
     public Map<Integer, String> getNewsHeadings() {
         return newsService.getNewsHeadings();
-    }
+    }*/
 
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public News getNewsById(@PathVariable("id") String id) {
         News news = newsService.findById(id);
         if (news == null)
             throw new NotFoundException(HttpStatus.NOT_FOUND, "No news with such id");
         return news;
-    }
+    }*/
 
 
     @GetMapping("/category/{category}")
@@ -64,7 +64,11 @@ public class NewsController {
 
     @GetMapping("/{id}/comments")
     public List<NewsComment> getNewsCommentsByUserId(@PathVariable("id") String id) {
-        return this.getNewsById(id).getComments().stream().map(NewsComment::provideNewsComment).collect(Collectors.toList());
+        return this.getNewsById(id)
+                .getComments()
+                .stream()
+                .map(NewsComment::provideNewsComment)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/{id}/comments")
@@ -79,6 +83,7 @@ public class NewsController {
         News news = this.getNewsById(newsId);
         Comment toDelete = newsService.getNewsCommentById(news,commentId);
         commentService.deleteCommentById(toDelete.getId());
+        news.getComments().remove(Integer.parseInt(commentId));
         return news;
     }
 }

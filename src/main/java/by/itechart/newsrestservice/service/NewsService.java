@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.service;
 
+
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
@@ -69,7 +70,14 @@ public class NewsService {
         } catch (IndexOutOfBoundsException e) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "No comment with such id");
         }
-
-
     }
+
+
+
+
+    public List<News> getNewsSummary(){
+        return newsRepository.findTop10ByOrderByCreatedAtDesc();
+    }
+
+
 }
