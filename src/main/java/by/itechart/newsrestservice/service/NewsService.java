@@ -9,12 +9,12 @@ import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.repository.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class NewsService {
@@ -25,9 +25,9 @@ public class NewsService {
         this.newsRepository = newsRepository;
     }
 
-    public News findById(String id) {
-        Long newsId = checkId(id);
-        return newsRepository.findById(newsId).orElse(null);
+    public News findById(long id) {
+        //Long newsId = checkId(id);
+        return newsRepository.findById(id).orElse(null);
     }
 
     public void deleteById(Long id) {
@@ -58,7 +58,7 @@ public class NewsService {
 
     public Map<Integer, String> getNewsHeadings() {
         Map<Integer, String> headers = new HashMap<>();
-        List<News> news =  newsRepository.findAll();
+        List<News> news = newsRepository.findAll();
         for (int i = 0; i < news.size(); i++) {
             headers.put(i + 1, news.get(i).getHeading());
         }
@@ -73,9 +73,16 @@ public class NewsService {
             throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Type mismatch in field(s)!", e);
         }
         try {
-            return news.getComments().get(commentId-1);
+            return news.getComments().get(commentId - 1);
         } catch (IndexOutOfBoundsException e) {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "No comment with such id");
         }
     }
+
+
+    public List<NewsDto> getNews() {
+        return newsRepository.findAll().stream().map(NewsDto::getNewsDto).collect(Collectors.toList());
+    }
+
+
 }

@@ -9,33 +9,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final NewsService newsService;
     private final UserService userService;
 
     @Autowired
     public CommentService(CommentRepository commentRepository, NewsService newsService, UserService userService) {
         this.commentRepository = commentRepository;
-        this.newsService = newsService;
         this.userService = userService;
     }
 
-    public boolean addComment(String newsId, String commentText) {
-        News news = newsService.findById(newsId);
+    public void addComment(News news, String commentText) {
         Comment comment = new Comment();
-
         comment.setComment(commentText);
         comment.setNews(news);
         comment.setUser(userService.getCurrentUserByUsername());
-
         commentRepository.save(comment);
-        return true;
-
     }
 
     public void deleteById(Long id) {
         commentRepository.deleteById(id);
     }
-
 
     public Comment findById(Long id) {
         return commentRepository.findById(id).orElse(null);
