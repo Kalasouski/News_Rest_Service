@@ -19,13 +19,13 @@ public class NewsDto {
     private NewsCategory category;
     private List<CommentDto> comments;
 
-    public News getNews() {
+    public static News getNews(NewsDto newsDto) {
         News news = new News();
-        news.setId(id);
-        news.setHeading(heading);
-        news.setBrief(brief);
-        news.setContent(content);
-        news.setCategory(category);
+        news.setId(newsDto.id);
+        news.setHeading(newsDto.heading);
+        news.setBrief(newsDto.brief);
+        news.setContent(newsDto.content);
+        news.setCategory(newsDto.category);
         news.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         return news;
     }

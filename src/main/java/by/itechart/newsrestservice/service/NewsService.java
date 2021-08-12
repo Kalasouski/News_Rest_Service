@@ -41,7 +41,7 @@ public class NewsService {
     }
 
     public News save(NewsDto newsDto) {
-        return newsRepository.save(newsDto.getNews());
+        return newsRepository.save(NewsDto.getNews(newsDto));
     }
 
 
