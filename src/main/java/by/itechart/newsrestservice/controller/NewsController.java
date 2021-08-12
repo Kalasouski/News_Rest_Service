@@ -1,14 +1,11 @@
 
 package by.itechart.newsrestservice.controller;
 
-import by.itechart.newsrestservice.dto.AuthenticationRequestDto;
-
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
-import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/news")
@@ -85,14 +80,43 @@ public class NewsController {
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
+   //  ----------------------------------------------------------------------------------------
 
-    /*@DeleteMapping("/{news_id}/comments/{comment_id}")
-    public News deleteCommentToNewsById(@PathVariable("news_id") String newsId,@PathVariable("comment_id") String commentId) {
-        News news = this.getNewsById(newsId);
-        Comment toDelete = newsService.getNewsCommentById(news,commentId);
-        commentService.deleteCommentById(toDelete.getId());
-        news.getComments().remove(Integer.parseInt(commentId));
-        return news;
-    }*/
+    @PostMapping
+    public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {
+        if (newsDto == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        newsService.save(newsDto);
+        return new ResponseEntity<>(newsDto, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<NewsDto> updateNews(@RequestBody NewsDto newsDto, @PathVariable("id") String id) {
+        if (newsDto == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        newsService.save(newsDto);
+        return new ResponseEntity<>(newsDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<NewsDto> deleteNews(@PathVariable("id") Long id) {
+        News news = newsService.findById(id);
+        if (news == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        newsService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/*/comment/{id}")
+    public ResponseEntity<NewsDto> deleteComment(@PathVariable("id") Long id) {
+        Comment comment = commentService.findById(id);
+        if (comment == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        commentService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
-

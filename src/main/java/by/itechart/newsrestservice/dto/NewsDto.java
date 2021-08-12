@@ -5,6 +5,7 @@ import by.itechart.newsrestservice.entity.NewsCategory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,17 @@ public class NewsDto {
     private String content;
     private NewsCategory category;
     private List<CommentDto> comments;
+
+    public News getNews() {
+        News news = new News();
+        news.setId(id);
+        news.setHeading(heading);
+        news.setBrief(brief);
+        news.setContent(content);
+        news.setCategory(category);
+        news.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        return news;
+    }
 
     public static NewsDto getNewsDto(News news) {
         NewsDto newsDto = new NewsDto();
@@ -32,5 +44,4 @@ public class NewsDto {
     public static List<NewsDto> getNewsDtoList(List<News> newsList) {
         return newsList.stream().map(NewsDto::getNewsDto).collect(Collectors.toList());
     }
-
 }

@@ -1,8 +1,6 @@
 package by.itechart.newsrestservice.service;
 
-
 import by.itechart.newsrestservice.dto.NewsDto;
-
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
@@ -32,12 +30,18 @@ public class NewsService {
         return newsRepository.findById(id).orElse(null);
     }
 
+    public void deleteById(Long id) {
+        newsRepository.deleteById(id);
+    }
+
+
+
     public List<News> findByCategory(NewsCategory category) {
         return newsRepository.findByCategory(category);
     }
 
-    public News save(News news) {
-        return newsRepository.save(news);
+    public News save(NewsDto newsDto) {
+        return newsRepository.save(newsDto.getNews());
     }
 
 

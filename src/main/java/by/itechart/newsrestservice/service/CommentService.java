@@ -2,20 +2,18 @@ package by.itechart.newsrestservice.service;
 
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
-import by.itechart.newsrestservice.repository.CommentsRepository;
+import by.itechart.newsrestservice.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommentService {
-    private final CommentsRepository commentsRepository;
-    private final NewsService newsService;
+    private final CommentRepository commentRepository;
     private final UserService userService;
 
     @Autowired
-    public CommentService(CommentsRepository commentsRepository, NewsService newsService, UserService userService) {
-        this.commentsRepository = commentsRepository;
-        this.newsService = newsService;
+    public CommentService(CommentRepository commentRepository, NewsService newsService, UserService userService) {
+        this.commentRepository = commentRepository;
         this.userService = userService;
     }
 
@@ -24,12 +22,14 @@ public class CommentService {
         comment.setComment(commentText);
         comment.setNews(news);
         comment.setUser(userService.getCurrentUserByUsername());
-        commentsRepository.save(comment);
+        commentRepository.save(comment);
     }
 
-    public void deleteCommentById(Long id) {
-        commentsRepository.deleteById(id);
+    public void deleteById(Long id) {
+        commentRepository.deleteById(id);
     }
 
-
+    public Comment findById(Long id) {
+        return commentRepository.findById(id).orElse(null);
+    }
 }
