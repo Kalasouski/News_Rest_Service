@@ -19,7 +19,9 @@ public class News {
 
     private String heading;
 
-    private String news;
+    private String brief;
+
+    private String content;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "category")
