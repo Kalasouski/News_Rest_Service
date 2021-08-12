@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.controller;
 
+import by.itechart.newsrestservice.dto.AuthenticationRequestDto;
 import by.itechart.newsrestservice.dto.NewsComment;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
