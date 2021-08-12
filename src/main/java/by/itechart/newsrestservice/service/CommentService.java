@@ -19,17 +19,12 @@ public class CommentService {
         this.userService = userService;
     }
 
-    public boolean addComment(String newsId, String commentText) {
-        News news = newsService.findById(newsId);
+    public void addComment(News news, String commentText) {
         Comment comment = new Comment();
-
         comment.setComment(commentText);
         comment.setNews(news);
         comment.setUser(userService.getCurrentUserByUsername());
-
         commentsRepository.save(comment);
-        return true;
-
     }
 
     public void deleteCommentById(Long id) {

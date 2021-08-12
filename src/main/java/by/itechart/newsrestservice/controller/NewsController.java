@@ -1,7 +1,9 @@
+
 package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.AuthenticationRequestDto;
-import by.itechart.newsrestservice.dto.NewsComment;
+
+import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
@@ -37,48 +39,60 @@ public class NewsController {
     }
 
     @GetMapping
-    public Map<Integer, String> getNewsHeadings() {
-        return newsService.getNewsHeadings();
+    public ResponseEntity<List<NewsDto>> getNewsList(){
+        return new ResponseEntity<>(newsService.getNews(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public News getNewsById(@PathVariable("id") String id) {
-        News news = newsService.findById(id);
-        if (news == null)
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "No news with such id");
-        return news;
+    public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") String id){
+        long newsId;
+        try {
+            newsId = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(400).build();
+        }
+        News news = newsService.findById(newsId);
+        NewsDto newsDto = NewsDto.getNewsDto(news);
+        return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
 
     @GetMapping("/category/{category}")
-    public List<News> getNewsByCategory(@PathVariable("category") String category) {
+    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category){
         if (category == null || category.isBlank() || category.isEmpty()) {
             throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field category can't be empty!");
         }
         try {
-            return newsService.findByCategory(NewsCategory.valueOf(category.toUpperCase()));
+            List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.
+                    findByCategory(NewsCategory.valueOf(category.toUpperCase())));
+            return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Invalid category!");
         }
     }
 
-    @GetMapping("/{id}/comments")
-    public List<NewsComment> getNewsCommentsByUserId(@PathVariable("id") String id) {
-        return this.getNewsById(id).getComments().stream().map(NewsComment::provideNewsComment).collect(Collectors.toList());
-    }
-
     @PostMapping("/{id}/comments")
-    public News postCommentToNews(@PathVariable("id") String id, @RequestBody String comment) {
-        News news = newsService.findById(id);
-        commentService.addComment(id, comment);
-        return news;
+    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") String id, @RequestBody String comment) {
+        long newsId;
+        try {
+            newsId = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(400).build();
+        }
+        News news = newsService.findById(newsId);
+        commentService.addComment(news, comment);
+        NewsDto newsDto = NewsDto.getNewsDto(news);
+        return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{news_id}/comments/{comment_id}")
+
+    /*@DeleteMapping("/{news_id}/comments/{comment_id}")
     public News deleteCommentToNewsById(@PathVariable("news_id") String newsId,@PathVariable("comment_id") String commentId) {
         News news = this.getNewsById(newsId);
         Comment toDelete = newsService.getNewsCommentById(news,commentId);
         commentService.deleteCommentById(toDelete.getId());
+        news.getComments().remove(Integer.parseInt(commentId));
         return news;
-    }
+    }*/
 }
+
