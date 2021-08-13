@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.controller;
 
+import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
@@ -54,11 +55,11 @@ public class NewsController {
     }
 
     @PostMapping("/{id}/comment")
-    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody String comment) {
+    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
         if(news == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        commentService.addComment(news, comment);
+        commentService.addComment(news, commentDto);
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
