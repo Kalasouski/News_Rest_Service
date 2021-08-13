@@ -23,9 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ExceptionHandler({InvalidInputFieldException.class,
-            NumberFormatException.class,
-            IllegalArgumentException.class})
+    @ExceptionHandler({NumberFormatException.class, IllegalArgumentException.class})
     public ResponseEntity<String> numberFormatExceptionHandle() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
     }
