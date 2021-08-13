@@ -33,23 +33,30 @@ public class NewsController {
     @GetMapping("/{id}")
     public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") Long id) {
         News news = newsService.findById(id);
-        NewsDto newsDto = NewsDto.getNewsDto(news);
-        return new ResponseEntity<>(newsDto, HttpStatus.OK);
+        if(news == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
     @GetMapping("/category/{category}")
     public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category) {
-        if (category == null) {
+        NewsCategory newsCategory;
+        try{
+            newsCategory = NewsCategory.valueOf(category.toUpperCase());
+        } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService
-                .findByCategory(NewsCategory.valueOf(category.toUpperCase())));
+        List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.findByCategory(newsCategory));
+        if(newsDtoList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
     }
 
     @PostMapping("/{id}/comment")
     public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody String comment) {
         News news = newsService.findById(id);
+        if(news == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         commentService.addComment(news, comment);
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
@@ -97,10 +104,5 @@ public class NewsController {
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<String> numberFormatExceptionHandle() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> illegalArgumentExceptionHandle() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
     }
 }

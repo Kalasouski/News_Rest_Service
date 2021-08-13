@@ -26,7 +26,6 @@ public class NewsService {
     }
 
     public News findById(long id) {
-        //Long newsId = checkId(id);
         return newsRepository.findById(id).orElse(null);
     }
 
