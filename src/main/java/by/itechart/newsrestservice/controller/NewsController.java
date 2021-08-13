@@ -80,8 +80,8 @@ public class NewsController {
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
-   //  ----------------------------------------------------------------------------------------
 
+    //  ----------------------------------------------------------------------------------------
     @PostMapping
     public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {
         if (newsDto == null) {
@@ -118,5 +118,10 @@ public class NewsController {
         }
         commentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<String> numberFormatExceptionHandle() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
     }
 }

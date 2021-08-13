@@ -19,7 +19,7 @@ public class NewsDto {
     private NewsCategory category;
     private List<CommentDto> comments;
 
-    public News getNews() {
+    public News dtoToNews() {
         News news = new News();
         news.setId(id);
         news.setHeading(heading);
