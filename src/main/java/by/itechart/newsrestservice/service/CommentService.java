@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.service;
 
+import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.repository.CommentRepository;
@@ -17,9 +18,9 @@ public class CommentService {
         this.userService = userService;
     }
 
-    public void addComment(News news, String commentText) {
+    public void addComment(News news, CommentDto commentDto) {
         Comment comment = new Comment();
-        comment.setComment(commentText);
+        comment.setComment(commentDto.getComment());
         comment.setNews(news);
         comment.setUser(userService.getCurrentUserByUsername());
         commentRepository.save(comment);
