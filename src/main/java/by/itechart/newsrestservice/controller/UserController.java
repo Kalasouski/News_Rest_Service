@@ -23,22 +23,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ExceptionHandler(InvalidInputFieldException.class)
-    public ResponseEntity<String> handleUserException(InvalidInputFieldException exception) {
-        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    @ExceptionHandler({InvalidInputFieldException.class,
+            NumberFormatException.class,
+            IllegalArgumentException.class})
+    public ResponseEntity<String> numberFormatExceptionHandle() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
     }
 
     @GetMapping("/admin/users/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("id") String id) {
-        long userId;
-        try {
-            userId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Incorrect format of field(s)! ", e);
-        }
-        User user = userService.findById(userId);
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
+        User user = userService.findById(id);
         if (user == null) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "Can't find user with this username");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(UserDto.getUserDto(user));
     }
@@ -53,27 +49,13 @@ public class UserController {
     }
 
     @PutMapping("/admin/users/{id}")
-    public ResponseEntity<UserDto> changeUserStatus(@PathVariable("id") String id, @RequestBody String status) {
-        long parsedId;
-
-        try {
-            parsedId = Long.parseLong(id);
-        } catch (NumberFormatException ex) {
-            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Typo in field ID!");
-        }
-
-        User user = userService.findById(parsedId);
+    public ResponseEntity<UserDto> changeUserStatus(@PathVariable("id") Long id, @RequestBody String status) {
+        User user = userService.findById(id);
         if (user == null) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND, "User with this ID is not found!");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        User updatedUser;
-        try {
-            user.setStatus(Status.valueOf(status.toUpperCase()));
-            updatedUser = userService.save(user);
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidInputFieldException(HttpStatus.BAD_REQUEST, "Status is not found!");
-        }
+        user.setStatus(Status.valueOf(status.toUpperCase()));
+        User updatedUser = userService.save(user);
         return ResponseEntity.ok(UserDto.getUserDto(updatedUser));
     }
 
