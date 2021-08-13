@@ -47,8 +47,9 @@ public class NewsController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.findByCategory(newsCategory));
-        if(newsDtoList.isEmpty())
+        if(newsDtoList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
     }
 
