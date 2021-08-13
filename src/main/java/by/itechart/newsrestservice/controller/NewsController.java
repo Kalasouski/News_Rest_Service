@@ -8,6 +8,7 @@ import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,13 @@ public class NewsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NewsDto>> getNewsList() {
-        return new ResponseEntity<>(newsService.getNews(), HttpStatus.OK);
+    public ResponseEntity<List<NewsDto>> getNewsList(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "2") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ) {
+        List<NewsDto> list = newsService.getNews(pageNo,pageSize,sortBy);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
