@@ -37,3 +37,4 @@ build/
 demo/news-rest-service/.mvn/wrapper/maven-wrapper.jar
 mvnw
 mvnw.cmd
+src/main/resources/application.properties

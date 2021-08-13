@@ -1,11 +1,9 @@
-
 package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
-import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,61 +25,37 @@ public class NewsController {
         this.commentService = commentService;
     }
 
-    @ExceptionHandler(InvalidInputFieldException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleNewsException(InvalidInputFieldException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
-
     @GetMapping
-    public ResponseEntity<List<NewsDto>> getNewsList(){
+    public ResponseEntity<List<NewsDto>> getNewsList() {
         return new ResponseEntity<>(newsService.getNews(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") String id){
-        long newsId;
-        try {
-            newsId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(400).build();
-        }
-        News news = newsService.findById(newsId);
+    public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") Long id) {
+        News news = newsService.findById(id);
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
-
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category){
-        if (category == null || category.isBlank() || category.isEmpty()) {
-            throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Field category can't be empty!");
+    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category) {
+        if (category == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        try {
-            List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.
-                    findByCategory(NewsCategory.valueOf(category.toUpperCase())));
-            return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidInputFieldException(HttpStatus.NOT_FOUND, "Invalid category!");
-        }
+        List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService
+                .findByCategory(NewsCategory.valueOf(category.toUpperCase())));
+        return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") String id, @RequestBody String comment) {
-        long newsId;
-        try {
-            newsId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(400).build();
-        }
-        News news = newsService.findById(newsId);
+    @PostMapping("/{id}/comment")
+    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody String comment) {
+        News news = newsService.findById(id);
         commentService.addComment(news, comment);
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
-
-
     //  ----------------------------------------------------------------------------------------
+
     @PostMapping
     public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {
         if (newsDto == null) {
@@ -123,5 +97,10 @@ public class NewsController {
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<String> numberFormatExceptionHandle() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgumentExceptionHandle() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
     }
 }
