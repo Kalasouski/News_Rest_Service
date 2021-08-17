@@ -22,7 +22,7 @@ public class NewsDto {
 
     public News dtoToNews() {
         News news = new News();
-        news.setId(id);
+        //news.setId(id);
         news.setHeading(heading);
         news.setBrief(brief);
         news.setContent(content);
