@@ -81,7 +81,10 @@ public class NewsService {
         }
     }
 
-    public List<NewsDto> getNews(Integer pageNo, Integer pageSize, String sortBy) {
+    private static final Integer pageSize = 3;
+    public static final String sortBy = "createdAt";
+
+    public List<NewsDto> getNews(Integer pageNo) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         return newsRepository.findAll(paging).stream().map(NewsDto::getNewsDto).collect(Collectors.toList());
     }

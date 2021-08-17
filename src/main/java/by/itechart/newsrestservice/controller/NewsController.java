@@ -39,11 +39,11 @@ public class NewsController {
 
     @GetMapping
     public ResponseEntity<List<NewsDto>> getNewsList(
-            @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "2") Integer pageSize,
-            @RequestParam(defaultValue = "createdAt") String sortBy
+            @RequestParam(defaultValue = "0") Integer pageNo
+            //@RequestParam(defaultValue = "2") Integer pageSize,
+            //@RequestParam(defaultValue = "createdAt") String sortBy
     ) {
-        List<NewsDto> list = newsService.getNews(pageNo,pageSize,sortBy);
+        List<NewsDto> list = newsService.getNews(pageNo);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
