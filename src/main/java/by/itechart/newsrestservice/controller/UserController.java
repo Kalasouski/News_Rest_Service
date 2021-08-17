@@ -3,8 +3,6 @@ package by.itechart.newsrestservice.controller;
 import by.itechart.newsrestservice.dto.UserDto;
 import by.itechart.newsrestservice.entity.Status;
 import by.itechart.newsrestservice.entity.User;
-import by.itechart.newsrestservice.exceptions.InvalidInputFieldException;
-import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
