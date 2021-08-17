@@ -50,8 +50,9 @@ public class NewsController {
     @GetMapping("/{id}")
     public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") Long id) {
         News news = newsService.findById(id);
-        if (news == null)
+        if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
@@ -73,8 +74,9 @@ public class NewsController {
     @PostMapping("/{id}/comment")
     public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
-        if (news == null)
+        if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         commentService.addComment(news, commentDto);
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
