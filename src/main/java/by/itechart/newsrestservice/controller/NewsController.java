@@ -3,10 +3,13 @@ package by.itechart.newsrestservice.controller;
 import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.entity.Comment;
+import by.itechart.newsrestservice.entity.Like;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.service.CommentService;
+import by.itechart.newsrestservice.service.LikeService;
 import by.itechart.newsrestservice.service.NewsService;
+import by.itechart.newsrestservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +22,18 @@ import java.util.List;
 public class NewsController {
     private final NewsService newsService;
     private final CommentService commentService;
+    private final LikeService likeService;
+    private final UserService userService;
 
     @Autowired
-    public NewsController(NewsService newsService, CommentService commentService) {
+    public NewsController(NewsService newsService,
+                          CommentService commentService,
+                          LikeService likeService,
+                          UserService userService) {
         this.newsService = newsService;
         this.commentService = commentService;
+        this.likeService = likeService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -34,7 +44,7 @@ public class NewsController {
     @GetMapping("/{id}")
     public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") Long id) {
         News news = newsService.findById(id);
-        if(news == null)
+        if (news == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
@@ -42,13 +52,13 @@ public class NewsController {
     @GetMapping("/category/{category}")
     public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category) {
         NewsCategory newsCategory;
-        try{
+        try {
             newsCategory = NewsCategory.valueOf(category.toUpperCase());
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.findByCategory(newsCategory));
-        if(newsDtoList.isEmpty()) {
+        if (newsDtoList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
@@ -57,7 +67,7 @@ public class NewsController {
     @PostMapping("/{id}/comment")
     public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
-        if(news == null)
+        if (news == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         commentService.addComment(news, commentDto);
         NewsDto newsDto = NewsDto.getNewsDto(news);
@@ -91,6 +101,37 @@ public class NewsController {
         }
         newsService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<NewsDto> likeNews(@PathVariable("id") Long id) {
+        News news = newsService.findById(id);
+        if (news == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        likeService.addLikeToNews(news);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/dislike")
+    public ResponseEntity<NewsDto> dislikeNews(@PathVariable("id") Long id) {
+        News news = newsService.findById(id);
+        if (news == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<Like> likes = likeService.findLikeByUserId(userService.getCurrentUserByUsername().getId());
+        if (likes.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Like like = likes.get(0);
+        if (like == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        likeService.removeLikeFromNews(like);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/*/comment/{id}")

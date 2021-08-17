@@ -34,4 +34,8 @@ public class News {
     @OneToMany(mappedBy = "news")
     private List<Comment> comments;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "news")
+    private List<Like> likes;
+
 }
