@@ -91,11 +91,11 @@ public class NewsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NewsDto> updateNews(@RequestBody NewsDto newsDto, @PathVariable("id") String id) {
+    public ResponseEntity<NewsDto> updateNews(@RequestBody NewsDto newsDto, @PathVariable("id") Long id) {
         if (newsDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        newsService.save(newsDto);
+        newsService.update(newsDto, id);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 

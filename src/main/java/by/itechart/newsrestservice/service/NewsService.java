@@ -46,6 +46,12 @@ public class NewsService {
         return newsRepository.save(newsDto.dtoToNews());
     }
 
+    public News update(NewsDto newsDto, Long id) {
+        News news = newsDto.dtoToNews();
+        news.setId(id);
+        return newsRepository.save(news);
+    }
+
 
     public Long checkId(String id) {
         if (id == null || id.isEmpty() || id.isBlank()) {
@@ -80,14 +86,13 @@ public class NewsService {
             throw new NotFoundException(HttpStatus.NOT_FOUND, "No comment with such id");
         }
     }
-
     private static final Integer pageSize = 3;
+
     public static final String sortBy = "createdAt";
 
     public List<NewsDto> getNews(Integer pageNo) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         return newsRepository.findAll(paging).stream().map(NewsDto::getNewsDto).collect(Collectors.toList());
     }
-
 
 }
