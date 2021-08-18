@@ -6,11 +6,13 @@ import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,11 @@ import java.util.stream.Collectors;
 @Service
 public class NewsService {
     private final NewsRepository newsRepository;
+    
+    @Value("${pagination.page_size}")
+    private final Integer pageSize;
+    @Value("${pagination.sort_by}")
+    public final String sortBy = "createdAt";
 
     public News findById(long id) {
         return newsRepository.findById(id).orElse(null);
@@ -38,12 +45,9 @@ public class NewsService {
     public News update(NewsToSaveDto newsDto, Long id) {
         News news = newsDto.dtoToNews();
         news.setId(id);
+        news.setComments(new ArrayList<>());
         return newsRepository.save(news);
     }
-
-    private static final Integer pageSize = 3;
-
-    public static final String sortBy = "createdAt";
 
     public List<NewsDto> getNews(Integer pageNo) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
