@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NewsToSaveDto {
-    private Long id;
     private String heading;
     private String brief;
     private String content;

@@ -45,7 +45,6 @@ public class NewsService {
     public News update(NewsToSaveDto newsDto, Long id) {
         News news = newsDto.dtoToNews();
         news.setId(id);
-        news.setComments(new ArrayList<>());
         return newsRepository.save(news);
     }
 
