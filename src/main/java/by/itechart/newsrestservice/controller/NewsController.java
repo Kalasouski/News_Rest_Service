@@ -10,45 +10,29 @@ import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.LikeService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/news")
 public class NewsController {
     private final NewsService newsService;
     private final CommentService commentService;
     private final LikeService likeService;
     private final UserService userService;
 
-    @Autowired
-    public NewsController(NewsService newsService,
-                          CommentService commentService,
-                          LikeService likeService,
-                          UserService userService) {
-        this.newsService = newsService;
-        this.commentService = commentService;
-        this.likeService = likeService;
-        this.userService = userService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<NewsDto>> getNewsList(
-            @RequestParam(defaultValue = "0") Integer pageNo
-            //@RequestParam(defaultValue = "2") Integer pageSize,
-            //@RequestParam(defaultValue = "createdAt") String sortBy
-    ) {
+    @GetMapping("/news")
+    public ResponseEntity<List<NewsDto>> getNewsList(@RequestParam(defaultValue = "0") Integer pageNo) {
         List<NewsDto> list = newsService.getNews(pageNo);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") Long id) {
+    @GetMapping("/news/{id}")
+    public ResponseEntity<NewsDto> getNewsById(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -56,8 +40,8 @@ public class NewsController {
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category) {
+    @GetMapping("/news/category/{category}")
+    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable String category) {
         NewsCategory newsCategory;
         try {
             newsCategory = NewsCategory.valueOf(category.toUpperCase());
@@ -71,8 +55,8 @@ public class NewsController {
         return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/comment")
-    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody CommentDto commentDto) {
+    @PostMapping("/news/{id}/comment")
+    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -81,9 +65,8 @@ public class NewsController {
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
-    //  ----------------------------------------------------------------------------------------
 
-    @PostMapping
+    @PostMapping("/news")
     public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {
         if (newsDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -92,8 +75,8 @@ public class NewsController {
         return new ResponseEntity<>(newsDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<NewsDto> updateNews(@RequestBody NewsDto newsDto, @PathVariable("id") Long id) {
+    @PutMapping("/news/{id}")
+    public ResponseEntity<NewsDto> updateNews(@PathVariable Long id, @RequestBody NewsDto newsDto) {
         if (newsDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -101,8 +84,8 @@ public class NewsController {
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<NewsDto> deleteNews(@PathVariable("id") Long id) {
+    @DeleteMapping("/news/{id}")
+    public ResponseEntity<NewsDto> deleteNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -111,8 +94,8 @@ public class NewsController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/{id}/like")
-    public ResponseEntity<NewsDto> likeNews(@PathVariable("id") Long id) {
+    @PostMapping("/news/{id}/like")
+    public ResponseEntity<NewsDto> likeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -121,8 +104,8 @@ public class NewsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/dislike")
-    public ResponseEntity<NewsDto> dislikeNews(@PathVariable("id") Long id) {
+    @DeleteMapping("/news/{id}/dislike")
+    public ResponseEntity<NewsDto> dislikeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -142,8 +125,8 @@ public class NewsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/*/comment/{id}")
-    public ResponseEntity<NewsDto> deleteComment(@PathVariable("id") Long id) {
+    @DeleteMapping("/news/{news_id}/comment/{id}")
+    public ResponseEntity<NewsDto> deleteComment(@PathVariable Long news_id, @PathVariable Long id) {
         Comment comment = commentService.findById(id);
         if (comment == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
