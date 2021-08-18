@@ -4,7 +4,7 @@ import by.itechart.newsrestservice.dto.UserDto;
 import by.itechart.newsrestservice.entity.Status;
 import by.itechart.newsrestservice.entity.User;
 import by.itechart.newsrestservice.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class UserController {
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @ExceptionHandler({NumberFormatException.class, IllegalArgumentException.class})
     public ResponseEntity<String> numberFormatExceptionHandle() {
@@ -27,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/users/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         User user = userService.findById(id);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -45,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/admin/users/{id}")
-    public ResponseEntity<UserDto> changeUserStatus(@PathVariable("id") Long id, @RequestBody String status) {
+    public ResponseEntity<UserDto> changeUserStatus(@PathVariable Long id, @RequestBody String status) {
         User user = userService.findById(id);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
