@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 @Service
 public class NewsService {
     private final NewsRepository newsRepository;
-    
+
     @Value("${pagination.page_size}")
-    private final Integer pageSize;
+    private Integer pageSize;
     @Value("${pagination.sort_by}")
-    public final String sortBy = "createdAt";
+    public String sortBy = "createdAt";
 
     public News findById(long id) {
         return newsRepository.findById(id).orElse(null);
