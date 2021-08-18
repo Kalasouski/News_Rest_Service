@@ -80,7 +80,7 @@ public class NewsController {
         if (newsDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        newsService.save(newsDto);
+        newsService.update(newsDto, id);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
