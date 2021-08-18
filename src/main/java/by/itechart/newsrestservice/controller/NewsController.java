@@ -2,6 +2,7 @@ package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsDto;
+import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.Like;
 import by.itechart.newsrestservice.entity.News;
@@ -67,21 +68,21 @@ public class NewsController {
     }
 
     @PostMapping("/news")
-    public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {
-        if (newsDto == null) {
+    public ResponseEntity<NewsDto> saveNews(@RequestBody NewsToSaveDto newsToSaveDto) {
+        if (newsToSaveDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        newsService.save(newsDto);
-        return new ResponseEntity<>(newsDto, HttpStatus.CREATED);
+        News savedNews = newsService.save(newsToSaveDto);
+        return new ResponseEntity<>(NewsDto.getNewsDto(savedNews), HttpStatus.CREATED);
     }
 
     @PutMapping("/news/{id}")
-    public ResponseEntity<NewsDto> updateNews(@PathVariable Long id, @RequestBody NewsDto newsDto) {
-        if (newsDto == null) {
+    public ResponseEntity<NewsDto> updateNews(@PathVariable Long id, @RequestBody NewsToSaveDto newsToSaveDto) {
+        if (newsToSaveDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        newsService.update(newsDto, id);
-        return new ResponseEntity<>(newsDto, HttpStatus.OK);
+        News updatedNews = newsService.update(newsToSaveDto, id);
+        return new ResponseEntity<>(NewsDto.getNewsDto(updatedNews), HttpStatus.OK);
     }
 
     @DeleteMapping("/news/{id}")
