@@ -42,19 +42,9 @@ public class NewsController {
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
-    @GetMapping("/news/category/{category}")
-    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable String category) {
-        NewsCategory newsCategory;
-        try {
-            newsCategory = NewsCategory.valueOf(category.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.findByCategory(newsCategory));
-        if (newsDtoList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
+    @GetMapping("/news/category/{id}")
+    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable Long id) {
+        return new ResponseEntity<>(NewsDto.getNewsDtoList(newsService.findByCategoryId(id)), HttpStatus.OK);
     }
 
     @PostMapping("/news/{id}/comment")

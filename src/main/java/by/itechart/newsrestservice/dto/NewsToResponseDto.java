@@ -1,7 +1,6 @@
 package by.itechart.newsrestservice.dto;
 
 import by.itechart.newsrestservice.entity.News;
-import by.itechart.newsrestservice.entity.NewsCategory;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -12,7 +11,7 @@ public class NewsToResponseDto {
     private String heading;
     private String brief;
     private String content;
-    private NewsCategory category;
+    private String category;
     private Timestamp createdAt;
 
     public NewsToResponseDto(News news) {
@@ -20,7 +19,7 @@ public class NewsToResponseDto {
         this.heading = news.getHeading();
         this.brief = news.getBrief();
         this.content = news.getContent();
-        this.category = news.getCategory();
+        this.category = news.getNewsCategory().getName();
         this.createdAt = news.getCreatedAt();
     }
 }

@@ -13,14 +13,13 @@ public class NewsToSaveDto {
     private String heading;
     private String brief;
     private String content;
-    private NewsCategory category;
+    private Long categoryId;
 
     public News dtoToNews() {
         News news = new News();
         news.setHeading(heading);
         news.setBrief(brief);
         news.setContent(content);
-        news.setCategory(category);
         news.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         return news;
     }

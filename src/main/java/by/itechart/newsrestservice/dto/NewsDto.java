@@ -1,7 +1,6 @@
 package by.itechart.newsrestservice.dto;
 
 import by.itechart.newsrestservice.entity.News;
-import by.itechart.newsrestservice.entity.NewsCategory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -15,7 +14,7 @@ public class NewsDto {
     private String heading;
     private String brief;
     private String content;
-    private NewsCategory category;
+    private String category;
     private List<CommentDto> comments;
     private int likes;
 
@@ -25,7 +24,7 @@ public class NewsDto {
         newsDto.setHeading(news.getHeading());
         newsDto.setBrief(news.getBrief());
         newsDto.setContent(news.getContent());
-        newsDto.setCategory(news.getCategory());
+        newsDto.setCategory(news.getNewsCategory().getName());
         newsDto.setComments(news.getComments().stream().map(CommentDto::getCommentDto).collect(Collectors.toList()));
         newsDto.setLikes(news.getLikes().size());
         return newsDto;
