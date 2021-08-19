@@ -2,16 +2,15 @@ package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsDto;
+import by.itechart.newsrestservice.dto.NewsToResponseDto;
+import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
-import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
 import by.itechart.newsrestservice.service.VoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +40,13 @@ public class NewsController {
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
-    @GetMapping("/news/category/{category}")
+    @GetMapping("/news/category/{id}")
     public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable Long id) {
-        return new ResponseEntity<>(NewsDto.getNewsDtoList(newsService.findByCategory(id)), HttpStatus.OK);
+        return new ResponseEntity<>(NewsDto.getNewsDtoList(newsService.findByCategoryId(id)), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/comment")
-    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable("id") Long id, @RequestBody CommentDto commentDto) {
+    @PostMapping("/news/{id}/comment")
+    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -57,26 +56,26 @@ public class NewsController {
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {
-        if (newsDto == null) {
+    @PostMapping("/news")
+    public ResponseEntity<NewsToResponseDto> saveNews(@RequestBody NewsToSaveDto newsToSaveDto) {
+        if (newsToSaveDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        newsService.save(newsDto);
-        return new ResponseEntity<>(newsDto, HttpStatus.CREATED);
+        News savedNews = newsService.save(newsToSaveDto);
+        return new ResponseEntity<>(new NewsToResponseDto(savedNews), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<NewsDto> updateNews(@RequestBody NewsDto newsDto, @PathVariable("id") Long id) {
-        if (newsDto == null) {
+    @PutMapping("/news/{id}")
+    public ResponseEntity<NewsToResponseDto> updateNews(@PathVariable Long id, @RequestBody NewsToSaveDto newsToSaveDto) {
+        if (newsToSaveDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        newsService.update(newsDto, id);
-        return new ResponseEntity<>(newsDto, HttpStatus.OK);
+        News updatedNews = newsService.update(newsToSaveDto, id);
+        return new ResponseEntity<>(new NewsToResponseDto(updatedNews), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<NewsDto> deleteNews(@PathVariable("id") Long id) {
+    @DeleteMapping("/news/{id}")
+    public ResponseEntity<NewsDto> deleteNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,8 +94,8 @@ public class NewsController {
         return new ResponseEntity<>(voteService.getNewsRating(id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/*/comment/{id}")
-    public ResponseEntity<NewsDto> deleteComment(@PathVariable("id") Long id) {
+    @DeleteMapping("/news/{news_id}/comment/{id}")
+    public ResponseEntity<NewsDto> deleteComment(@PathVariable Long news_id, @PathVariable Long id) {
         Comment comment = commentService.findById(id);
         if (comment == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
