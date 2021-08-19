@@ -9,44 +9,31 @@ import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
 import by.itechart.newsrestservice.service.VoteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/news")
 public class NewsController {
     private final NewsService newsService;
     private final CommentService commentService;
     private final VoteService voteService;
     private final UserService userService;
 
-    @Autowired
-    public NewsController(NewsService newsService,
-                          CommentService commentService,
-                          VoteService voteService,
-                          UserService userService) {
-        this.newsService = newsService;
-        this.commentService = commentService;
-        this.voteService = voteService;
-        this.userService = userService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<NewsDto>> getNewsList(
-            @RequestParam(defaultValue = "0") Integer pageNo
-            //@RequestParam(defaultValue = "2") Integer pageSize,
-            //@RequestParam(defaultValue = "createdAt") String sortBy
-    ) {
+    @GetMapping("/news")
+    public ResponseEntity<List<NewsDto>> getNewsList(@RequestParam(defaultValue = "0") Integer pageNo) {
         List<NewsDto> list = newsService.getNews(pageNo);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<NewsDto> getNewsById(@PathVariable("id") Long id) {
+    @GetMapping("/news/{id}")
+    public ResponseEntity<NewsDto> getNewsById(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -54,19 +41,9 @@ public class NewsController {
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable("category") String category) {
-        NewsCategory newsCategory;
-        try {
-            newsCategory = NewsCategory.valueOf(category.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<NewsDto> newsDtoList = NewsDto.getNewsDtoList(newsService.findByCategory(newsCategory));
-        if (newsDtoList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(newsDtoList, HttpStatus.OK);
+    @GetMapping("/news/category/{category}")
+    public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable Long id) {
+        return new ResponseEntity<>(NewsDto.getNewsDtoList(newsService.findByCategory(id)), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/comment")
@@ -79,7 +56,6 @@ public class NewsController {
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
     }
-    //  ----------------------------------------------------------------------------------------
 
     @PostMapping
     public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto newsDto) {

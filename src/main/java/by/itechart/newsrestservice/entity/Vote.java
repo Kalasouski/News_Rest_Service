@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "votes")
 public class Vote {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
