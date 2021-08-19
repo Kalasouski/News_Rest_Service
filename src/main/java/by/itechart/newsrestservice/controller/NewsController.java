@@ -84,7 +84,7 @@ public class NewsController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/{id}/vote")
+    @PostMapping("/news/{id}/vote")
     public ResponseEntity<Integer> likeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         if (news == null) {
