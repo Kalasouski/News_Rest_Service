@@ -4,6 +4,7 @@ import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
+import by.itechart.newsrestservice.repository.NewsCategoryRepository;
 import by.itechart.newsrestservice.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,31 +20,41 @@ import java.util.stream.Collectors;
 @Service
 public class NewsService {
     private final NewsRepository newsRepository;
+    private final NewsCategoryRepository newsCategoryRepository;
 
     @Value("${pagination.page_size}")
     private Integer pageSize;
     @Value("${pagination.sort_by}")
     public String sortBy = "createdAt";
 
-    public News findById(long id) {
+    public News findById(Long id) {
         return newsRepository.findById(id).orElse(null);
+    }
+
+    public NewsCategory findNewsCategoryById(Long id){
+        return newsCategoryRepository.findById(id).orElse(null);
     }
 
     public void deleteById(Long id) {
         newsRepository.deleteById(id);
     }
 
-    public List<News> findByCategory(NewsCategory category) {
-        return newsRepository.findByCategory(category);
+    public List<News> findByCategoryId(Long id) {
+        return newsRepository.findByNewsCategoryId(id);
     }
 
     public News save(NewsToSaveDto newsDto) {
-        return newsRepository.save(newsDto.dtoToNews());
+        NewsCategory newsCategory = findNewsCategoryById(newsDto.getCategoryId());
+        News news = newsDto.dtoToNews();
+        news.setNewsCategory(newsCategory);
+        return newsRepository.save(news);
     }
 
     public News update(NewsToSaveDto newsDto, Long id) {
+        NewsCategory newsCategory = findNewsCategoryById(newsDto.getCategoryId());
         News news = newsDto.dtoToNews();
         news.setId(id);
+        news.setNewsCategory(newsCategory);
         return newsRepository.save(news);
     }
 

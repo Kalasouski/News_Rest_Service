@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,9 +24,14 @@ public class News {
 
     private String content;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "category")
-    private NewsCategory category;
+//    @Enumerated(value = EnumType.STRING)
+//    @Column(name = "category")
+//    private NewsCategoryEnum category;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "news_category_id")
+    private NewsCategory newsCategory;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

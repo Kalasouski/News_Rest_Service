@@ -1,5 +1,17 @@
 package by.itechart.newsrestservice.entity;
 
-public enum NewsCategory {
-    PEOPLE, MONEY, AUTO, TECHNOLOGIES, POLITICS;
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Data
+@Entity
+public class NewsCategory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique=true)
+    private String name;
+
 }
