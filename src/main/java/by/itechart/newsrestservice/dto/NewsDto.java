@@ -16,7 +16,7 @@ public class NewsDto {
     private String content;
     private String category;
     private List<CommentDto> comments;
-    private int likes;
+    private int votes;
 
     public static NewsDto getNewsDto(News news) {
         NewsDto newsDto = new NewsDto();
@@ -26,7 +26,7 @@ public class NewsDto {
         newsDto.setContent(news.getContent());
         newsDto.setCategory(news.getNewsCategory().getName());
         newsDto.setComments(news.getComments().stream().map(CommentDto::getCommentDto).collect(Collectors.toList()));
-        newsDto.setLikes(news.getLikes().size());
+        newsDto.setVotes(news.getVotes().size());
         return newsDto;
     }
 
