@@ -1,6 +1,6 @@
 package by.itechart.newsrestservice.service;
 
-import by.itechart.newsrestservice.entity.Like;
+import by.itechart.newsrestservice.entity.Vote;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.repository.LikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +22,17 @@ public class LikeService {
     }
 
     public void addLikeToNews(News news) {
-        Like like = new Like();
-        like.setUser(userService.getCurrentUserByUsername());
-        like.setNews(news);
-        likeRepository.save(like);
+        Vote vote = new Vote();
+        vote.setUser(userService.getCurrentUserByUsername());
+        vote.setNews(news);
+        likeRepository.save(vote);
     }
 
-    public void removeLikeFromNews(Like like) {
-        likeRepository.delete(like);
+    public void removeLikeFromNews(Vote vote) {
+        likeRepository.delete(vote);
     }
 
-    public List<Like> findLikeByUserId(Long id) {
+    public List<Vote> findLikeByUserId(Long id) {
         return likeRepository.findLikeByUserId(id);
     }
 }

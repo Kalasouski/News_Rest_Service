@@ -1,6 +1,6 @@
 package by.itechart.newsrestservice.dto;
 
-import by.itechart.newsrestservice.entity.Like;
+import by.itechart.newsrestservice.entity.Vote;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ public class LikeDto {
     private Long id;
     private String username;
 
-    public static LikeDto getLikeDto(Like like){
-        return new LikeDto(like.getId(), like.getUser().getUsername());
+    public static LikeDto getLikeDto(Vote vote){
+        return new LikeDto(vote.getId(), vote.getUser().getUsername());
     }
 }
