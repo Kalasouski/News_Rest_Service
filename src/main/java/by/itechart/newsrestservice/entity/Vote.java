@@ -7,8 +7,8 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "likes")
-public class Like {
+@Table(name = "votes")
+public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +23,8 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "news_id")
     private News news;
+
+    @Column(name = "is_downvoted")
+    private boolean isDownvoted;
 
 }

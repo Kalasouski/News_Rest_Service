@@ -8,11 +8,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LikeDto {
+public class VoteDto {
     private Long id;
     private String username;
+    private boolean isDownvoted;
 
-    public static LikeDto getLikeDto(Vote vote){
-        return new LikeDto(vote.getId(), vote.getUser().getUsername());
+    public static VoteDto getVoteDto(Vote vote){
+        return new VoteDto(vote.getId(), vote.getUser().getUsername(), vote.isDownvoted());
     }
 }
