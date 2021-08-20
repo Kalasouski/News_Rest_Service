@@ -4,7 +4,6 @@ import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.dto.NewsToResponseDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
-import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,9 +34,6 @@ public class NewsController {
     @GetMapping("/news/{id}")
     public ResponseEntity<NewsDto> getNewsById(@PathVariable Long id) {
         News news = newsService.findById(id);
-        if (news == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
@@ -48,9 +45,6 @@ public class NewsController {
     @PostMapping("/news/{id}/comment")
     public ResponseEntity<NewsDto> postCommentToNews(@PathVariable Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
-        if (news == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         commentService.addComment(news, commentDto);
         NewsDto newsDto = NewsDto.getNewsDto(news);
         return new ResponseEntity<>(newsDto, HttpStatus.OK);
@@ -76,10 +70,6 @@ public class NewsController {
 
     @DeleteMapping("/news/{id}")
     public ResponseEntity<NewsDto> deleteNews(@PathVariable Long id) {
-        News news = newsService.findById(id);
-        if (news == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         newsService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -87,19 +77,12 @@ public class NewsController {
     @PostMapping("/news/{id}/vote")
     public ResponseEntity<Integer> likeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
-        if (news == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         voteService.voteForNews(news);
         return new ResponseEntity<>(voteService.getNewsRating(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/news/{news_id}/comment/{id}")
     public ResponseEntity<NewsDto> deleteComment(@PathVariable Long news_id, @PathVariable Long id) {
-        Comment comment = commentService.findById(id);
-        if (comment == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         commentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -107,5 +90,10 @@ public class NewsController {
     @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity<String> numberFormatExceptionHandle() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<String> noSuchElementExceptionHandle() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
     }
 }
