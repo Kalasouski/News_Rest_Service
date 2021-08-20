@@ -37,7 +37,7 @@ public class NewsController {
         return new ResponseEntity<>(NewsDto.getNewsDto(news), HttpStatus.OK);
     }
 
-    @GetMapping("/news/category/{id}")
+    @GetMapping("/news/category/{id}")  // TODO: 8/20/21 add check for isEmpty => throw new Exception
     public ResponseEntity<List<NewsDto>> getNewsListByCategory(@PathVariable Long id) {
         return new ResponseEntity<>(NewsDto.getNewsDtoList(newsService.findByCategoryId(id)), HttpStatus.OK);
     }
