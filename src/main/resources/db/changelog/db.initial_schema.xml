@@ -1,0 +1,76 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Siarhei Lemesh" id="1">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="username" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR"/>
+            <column name="last_name" type="VARCHAR"/>
+            <column name="role" type="VARCHAR"/>
+            <column name="status" type="VARCHAR(25)"/>
+        </createTable>
+
+        <createTable tableName="news">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="news_pk"/>
+            </column>
+            <column name="content" type="VARCHAR(100000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR"/>
+            <column name="heading" type="VARCHAR"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="brief" type="VARCHAR(999)"/>
+            <column name="news_category_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="comments">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="comments_pk"/>
+            </column>
+            <column name="comment" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="news_id" type="BIGINT"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+
+        <createTable tableName="likes">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="likes_pk"/>
+            </column>
+            <column name="news_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="news_category">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="news_category_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="comments" constraintName="comments_users_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="likes" constraintName="likes_users_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
+
+        <addForeignKeyConstraint baseColumnNames="news_id" baseTableName="comments" constraintName="comments_news_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="news"/>
+
+        <addForeignKeyConstraint baseColumnNames="news_category_id" baseTableName="news" constraintName="fk5pufjq06g4hjeq187n125el1d" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="news_category"/>
+
+        <addForeignKeyConstraint baseColumnNames="news_id" baseTableName="likes" constraintName="likes_news_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="news"/>
+
+        <addUniqueConstraint columnNames="name" constraintName="uk_82lvxryi6te05lcrtoqjroypa" tableName="news_category"/>
+    </changeSet>
+</databaseChangeLog>
