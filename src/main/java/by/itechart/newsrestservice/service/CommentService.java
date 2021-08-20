@@ -27,10 +27,11 @@ public class CommentService {
     }
 
     public void deleteById(Long id) {
-        commentRepository.deleteById(id);
+        Comment comment = findById(id);
+        commentRepository.delete(comment);
     }
 
     public Comment findById(Long id) {
-        return commentRepository.findById(id).orElse(null);
+        return commentRepository.findById(id).orElseThrow();
     }
 }
