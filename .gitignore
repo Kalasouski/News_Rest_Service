@@ -38,3 +38,6 @@ demo/news-rest-service/.mvn/wrapper/maven-wrapper.jar
 mvnw
 mvnw.cmd
 src/main/resources/application.properties
+db/.DS_Store
+db/.DS_Store
+.DS_Store
