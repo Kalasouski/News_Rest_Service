@@ -4,6 +4,7 @@ import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
+import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.repository.NewsCategoryRepository;
 import by.itechart.newsrestservice.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +29,16 @@ public class NewsService {
     public String sortBy = "createdAt";
 
     public News findById(Long id) {
-        return newsRepository.findById(id).orElse(null);
+        return newsRepository.findById(id).orElseThrow();
     }
 
     public NewsCategory findNewsCategoryById(Long id){
-        return newsCategoryRepository.findById(id).orElse(null);
+        return newsCategoryRepository.findById(id).orElseThrow();
     }
 
     public void deleteById(Long id) {
-        newsRepository.deleteById(id);
+        News news = findById(id);
+        newsRepository.delete(news);
     }
 
     public List<News> findByCategoryId(Long id) {
