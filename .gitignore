@@ -3,6 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+src/main/resources/application.properties
+src/main/resources/liquibase.properties
 
 ### STS ###
 .apt_generated
@@ -37,5 +39,5 @@ build/
 demo/news-rest-service/.mvn/wrapper/maven-wrapper.jar
 mvnw
 mvnw.cmd
-src/main/resources/application.properties
-src/main/resources/liquibase.properties
+db/.DS_Store
+.DS_Store
