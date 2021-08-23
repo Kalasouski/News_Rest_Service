@@ -1,17 +1,19 @@
 package by.itechart.newsrestservice.controller;
 
+import by.itechart.newsrestservice.TestDataProvider;
 import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
+import by.itechart.newsrestservice.entity.Like;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
-import by.itechart.newsrestservice.entity.Like;
+import by.itechart.newsrestservice.repository.NewsRepository;
 import by.itechart.newsrestservice.security.JwtTokenProvider;
 import by.itechart.newsrestservice.security.UserDetailsImpl;
 import by.itechart.newsrestservice.security.UserDetailsServiceImpl;
 import by.itechart.newsrestservice.service.CommentService;
+import by.itechart.newsrestservice.service.LikeService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
-import by.itechart.newsrestservice.service.LikeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -31,6 +33,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(controllers = NewsController.class)
 @WithMockUser(username = "admin", password = "admin")
@@ -40,22 +45,25 @@ public class NewsControllerTest {
     private NewsService newsService;
 
     @MockBean
-    private UserService userService;
+    private UserService mockUserService;
 
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
     @MockBean
-    private CommentService commentService;
+    private CommentService mockCommentService;
 
     @MockBean
-    private LikeService likeService;
+    private LikeService mockLikeService;
 
     @MockBean
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl mockUserDetailsServiceImpl;
 
     @MockBean
-    private UserDetailsImpl userDetailsImpl;
+    private UserDetailsImpl mockUserDetailsImpl;
+
+    @MockBean
+    private NewsRepository newsRepository;
 
     @MockBean
     private NewsToSaveDto newsToSaveDto;
@@ -78,155 +86,159 @@ public class NewsControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    private static final long EXISTING_ENTITY_ID = 1L;
-
-    private static final long DUMMY_ENTITY_ID = 4L;
-
-    private static final String STRING_PLACEHOLDER = "testStringForAnyField";
-
     @Before()
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void whenGetRequestToAllNewsIsSent_ThenStatusShouldBe200() throws Exception {
+    public void whenGetRequestToAllNewsIsSent_thenStatusShouldBe200() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/news"))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
 
     @Test
-    public void whenPostRequestVoteIsSentAndNewsIsPresent_ThenStatusShouldBe200() throws Exception {
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
+    public void whenPostRequestVoteIsSentAndNewsIsPresent_thenStatusShouldBe200() throws Exception {
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
 
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
+        given(newsService.findById(TestDataProvider.EXISTING_ENTITY_ID)).willReturn(mockedNews);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/like", EXISTING_ENTITY_ID)
+                .post("/news/{id}/like", TestDataProvider.EXISTING_ENTITY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
 
     @Test
-    public void whenPostRequestVoteIsSentAndNewsIsNotPresent_ThenStatusShouldBe404() throws Exception {
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
+    public void whenPostRequestVoteIsSentAndNewsIsNotPresent_thenStatusShouldBe404() throws Exception {
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
 
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
+        given(newsService.findById(TestDataProvider.NOT_EXISTING_ENTITY_ID)).willThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/like", DUMMY_ENTITY_ID)
+                .post("/news/{id}/like", TestDataProvider.NOT_EXISTING_ENTITY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
-    public void whenGetRequestToNewsIsSentAndNewsIsPresent_ThenStatusShouldBe200() throws Exception {
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
+    public void whenGetRequestToNewsIsSentAndNewsIsPresent_thenStatusShouldBe200() throws Exception {
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findById(TestDataProvider.EXISTING_ENTITY_ID)).willReturn(mockedNews);
 
-        Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
-        Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
+        given(mockedNews.getNewsCategory()).willReturn(mockedNewsCategory);
+        given(mockedNews.getNewsCategory().getName()).willReturn(TestDataProvider.STRING_PLACEHOLDER);
 
         Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
-        Mockito.when(mockedNews.getLikes().size()).thenReturn(2);
-        Mockito.when(Mockito.spy(mockedNews.getLikes())).thenReturn(mockedVotesList);
+        given(mockedNews.getLikes().size()).willReturn(2);
+        given(Mockito.spy(mockedNews.getLikes())).willReturn(mockedVotesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/news/{id}", EXISTING_ENTITY_ID))
+                .get("/news/{id}", TestDataProvider.EXISTING_ENTITY_ID))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
 
     @Test
-    public void whenGetRequestToNewsIsSentAndNewsIsNotPresent_ThenStatusShouldBe404() throws Exception {
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
+    public void whenGetRequestToNewsIsSentAndNewsIsNotPresent_thenStatusShouldBe404() throws Exception {
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findById(TestDataProvider.NOT_EXISTING_ENTITY_ID)).willThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/news/{id}", DUMMY_ENTITY_ID))
+                .get("/news/{id}", TestDataProvider.NOT_EXISTING_ENTITY_ID))
                 .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
-    public void whenGetRequestToNewsByCategoryIsSentAndCategoryExists_ThenStatusShouldBe200() throws Exception {
-        Mockito.when(mockedNewsCategory.getId()).thenReturn(EXISTING_ENTITY_ID);
-        Mockito.when(newsService.findByCategoryId(EXISTING_ENTITY_ID)).thenReturn(mockNewsList);
+    public void whenGetRequestToNewsByCategoryIsSentAndCategoryExists_thenStatusShouldBe200() throws Exception {
+        given(mockedNewsCategory.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findByCategoryId(TestDataProvider.EXISTING_ENTITY_ID)).willReturn(mockNewsList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/news/category/{id}", EXISTING_ENTITY_ID))
+                .get("/news/category/{id}", TestDataProvider.EXISTING_ENTITY_ID))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
 
-    // TODO: 8/20/21 add test if category list is empty
-
     @Test
-    public void whenPostRequestToAddCommentToNewsIsSentAndNewsExists_ThenStatusShouldBe200() throws Exception {
-        CommentDto commentDto = new CommentDto(1L, STRING_PLACEHOLDER, STRING_PLACEHOLDER);
-
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
-
-        Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
-        Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
-
-        Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
-        Mockito.when(mockedNews.getLikes().size()).thenReturn(2);
-        Mockito.when(Mockito.spy(mockedNews.getLikes())).thenReturn(mockedVotesList);
+    public void whenGetRequestToNewsByCategoryIsSentAndCategoryIsNotExist_thenStatusShouldBe404() throws Exception {
+        given(mockedNewsCategory.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findByCategoryId(TestDataProvider.NOT_EXISTING_ENTITY_ID)).willThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/comment", EXISTING_ENTITY_ID)
+                .get("/news/category{id}", TestDataProvider.NOT_EXISTING_ENTITY_ID))
+                .andExpect(MockMvcResultMatchers.status().is(400));
+    }
+
+    @Test
+    public void whenPostRequestToAddCommentToNewsIsSentAndNewsExists_thenStatusShouldBe200() throws Exception {
+        CommentDto commentDto = new CommentDto(
+                1L, TestDataProvider.STRING_PLACEHOLDER, TestDataProvider.STRING_PLACEHOLDER);
+
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findById(TestDataProvider.EXISTING_ENTITY_ID)).willReturn(mockedNews);
+
+        given(mockedNews.getNewsCategory()).willReturn(mockedNewsCategory);
+        given(mockedNews.getNewsCategory().getName()).willReturn(TestDataProvider.STRING_PLACEHOLDER);
+
+        Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
+        given(mockedNews.getLikes().size()).willReturn(2);
+        given(Mockito.spy(mockedNews.getLikes())).willReturn(mockedVotesList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/news/{id}/comment", TestDataProvider.EXISTING_ENTITY_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJson(commentDto)))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
 
     @Test
-    public void whenPostRequestToAddCommentToNewsIsSentAndNewsIsNotExist_ThenStatusShouldBe404() throws Exception {
-        CommentDto commentDto = new CommentDto(1L, STRING_PLACEHOLDER, STRING_PLACEHOLDER);
+    public void whenPostRequestToAddCommentToNewsIsSentAndNewsIsNotExist_thenStatusShouldBe404() throws Exception {
+        CommentDto commentDto = new CommentDto(
+                1L, TestDataProvider.STRING_PLACEHOLDER, TestDataProvider.STRING_PLACEHOLDER);
 
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findById(TestDataProvider.NOT_EXISTING_ENTITY_ID)).willThrow(NoSuchElementException.class);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/comment", DUMMY_ENTITY_ID)
+                .post("/news/{id}/comment", TestDataProvider.NOT_EXISTING_ENTITY_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJson(commentDto)))
                 .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
-    public void whenPostRequestToAddCommentToNewsIsSentAndCommentIsEmpty_ThenStatusShouldBe401()
+    public void whenPostRequestToAddCommentToNewsIsSentAndCommentIsEmpty_thenStatusShouldBe401()
             throws Exception {
 
         CommentDto commentDto = null;
 
-        Mockito.when(mockedNews.getId()).thenReturn(EXISTING_ENTITY_ID);
-        Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
+        given(mockedNews.getId()).willReturn(TestDataProvider.EXISTING_ENTITY_ID);
+        given(newsService.findById(TestDataProvider.EXISTING_ENTITY_ID)).willReturn(mockedNews);
 
-        Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
-        Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
+        given(mockedNews.getNewsCategory()).willReturn(mockedNewsCategory);
+        given(mockedNews.getNewsCategory().getName()).willReturn(TestDataProvider.STRING_PLACEHOLDER);
 
         Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
-        Mockito.when(mockedNews.getLikes().size()).thenReturn(2);
-        Mockito.when(Mockito.spy(mockedNews.getLikes())).thenReturn(mockedVotesList);
+        given(mockedNews.getLikes().size()).willReturn(2);
+        given(Mockito.spy(mockedNews.getLikes())).willReturn(mockedVotesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/comment", EXISTING_ENTITY_ID)
+                .post("/news/{id}/comment", TestDataProvider.EXISTING_ENTITY_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJson(commentDto)))
                 .andExpect(MockMvcResultMatchers.status().is(400));
     }
 
     @Test
-    public void whenPostRequestToAddNewsIsSentAndNewsDtoIsNotEmpty_ThenStatusShouldBe201() throws Exception {
+    public void whenPostRequestToAddNewsIsSentAndNewsDtoIsNotEmpty_thenStatusShouldBe201() throws Exception {
         NewsToSaveDto newsToSaveDto = new NewsToSaveDto();
-        newsToSaveDto.setContent(STRING_PLACEHOLDER);
-        newsToSaveDto.setHeading(STRING_PLACEHOLDER);
-        newsToSaveDto.setBrief(STRING_PLACEHOLDER);
+        newsToSaveDto.setContent(TestDataProvider.STRING_PLACEHOLDER);
+        newsToSaveDto.setHeading(TestDataProvider.STRING_PLACEHOLDER);
+        newsToSaveDto.setBrief(TestDataProvider.STRING_PLACEHOLDER);
         newsToSaveDto.setCategoryId(mockedNewsCategory.getId());
 
-        Mockito.when(newsService.save(newsToSaveDto)).thenReturn(mockedNews);
-        Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
-        Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
+        given(newsService.save(newsToSaveDto)).willReturn(mockedNews);
+        given(mockedNews.getNewsCategory()).willReturn(mockedNewsCategory);
+        given(mockedNews.getNewsCategory().getName()).willReturn(TestDataProvider.STRING_PLACEHOLDER);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/news")
@@ -236,12 +248,12 @@ public class NewsControllerTest {
     }
 
     @Test
-    public void whenPostRequestToAddNewsIsSentAndNewsDtoIsEmpty_ThenStatusShouldBe400() throws Exception {
+    public void whenPostRequestToAddNewsIsSentAndNewsDtoIsEmpty_thenStatusShouldBe400() throws Exception {
         NewsToSaveDto newsToSaveDto = null;
 
-        Mockito.when(newsService.save(newsToSaveDto)).thenReturn(mockedNews);
-        Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
-        Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
+        given(newsService.save(newsToSaveDto)).willReturn(mockedNews);
+        given(mockedNews.getNewsCategory()).willReturn(mockedNewsCategory);
+        given(mockedNews.getNewsCategory().getName()).willReturn(TestDataProvider.STRING_PLACEHOLDER);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/news")
