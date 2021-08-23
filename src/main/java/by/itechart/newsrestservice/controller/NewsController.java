@@ -78,7 +78,7 @@ public class NewsController {
     public ResponseEntity<Integer> likeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         likeService.voteForNews(news);
-        return new ResponseEntity<>(likeService.getNewsRating(id), HttpStatus.OK);
+        return new ResponseEntity<>(likeService.getTotalLikes(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/news/{news_id}/comment/{id}")

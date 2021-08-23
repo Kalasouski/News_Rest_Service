@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Like findLikeByUserId(Long userId);
 
-    @Query("SELECT COUNT(*) from Like WHERE is_downvoted=false AND news_id=:news_id")
-    Integer getRating(@Param("news_id") long news_id);
+    @Query("SELECT COUNT(*) from Like WHERE news_id=:news_id")
+    Integer getTotalLikes(@Param("news_id") long news_id);
 }
