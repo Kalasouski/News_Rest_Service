@@ -8,7 +8,7 @@ import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
-import by.itechart.newsrestservice.service.VoteService;
+import by.itechart.newsrestservice.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 public class NewsController {
     private final NewsService newsService;
     private final CommentService commentService;
-    private final VoteService voteService;
+    private final LikeService likeService;
     private final UserService userService;
 
     @GetMapping("/news")
@@ -74,11 +74,11 @@ public class NewsController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/news/{id}/vote")
+    @PostMapping("/news/{id}/like")
     public ResponseEntity<Integer> likeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
-        voteService.voteForNews(news);
-        return new ResponseEntity<>(voteService.getNewsRating(id), HttpStatus.OK);
+        likeService.voteForNews(news);
+        return new ResponseEntity<>(likeService.getNewsRating(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/news/{news_id}/comment/{id}")

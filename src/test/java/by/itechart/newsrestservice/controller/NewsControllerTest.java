@@ -4,14 +4,14 @@ import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
-import by.itechart.newsrestservice.entity.Vote;
+import by.itechart.newsrestservice.entity.Like;
 import by.itechart.newsrestservice.security.JwtTokenProvider;
 import by.itechart.newsrestservice.security.UserDetailsImpl;
 import by.itechart.newsrestservice.security.UserDetailsServiceImpl;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
-import by.itechart.newsrestservice.service.VoteService;
+import by.itechart.newsrestservice.service.LikeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -49,7 +49,7 @@ public class NewsControllerTest {
     private CommentService commentService;
 
     @MockBean
-    private VoteService voteService;
+    private LikeService likeService;
 
     @MockBean
     private UserDetailsServiceImpl userDetailsService;
@@ -67,7 +67,7 @@ public class NewsControllerTest {
     private NewsCategory mockedNewsCategory;
 
     @MockBean
-    private List<Vote> mockedVotesList;
+    private List<Like> mockedVotesList;
 
     @MockBean
     private List<News> mockNewsList;
@@ -102,7 +102,7 @@ public class NewsControllerTest {
         Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/vote", EXISTING_ENTITY_ID)
+                .post("/news/{id}/like", EXISTING_ENTITY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
@@ -114,7 +114,7 @@ public class NewsControllerTest {
         Mockito.when(newsService.findById(EXISTING_ENTITY_ID)).thenReturn(mockedNews);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/news/{id}/vote", DUMMY_ENTITY_ID)
+                .post("/news/{id}/like", DUMMY_ENTITY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(404));
     }
@@ -127,9 +127,9 @@ public class NewsControllerTest {
         Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
         Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
 
-        Mockito.doReturn(mockedVotesList).when(mockedNews).getVotes();
-        Mockito.when(mockedNews.getVotes().size()).thenReturn(2);
-        Mockito.when(Mockito.spy(mockedNews.getVotes())).thenReturn(mockedVotesList);
+        Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
+        Mockito.when(mockedNews.getLikes().size()).thenReturn(2);
+        Mockito.when(Mockito.spy(mockedNews.getLikes())).thenReturn(mockedVotesList);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/news/{id}", EXISTING_ENTITY_ID))
@@ -168,9 +168,9 @@ public class NewsControllerTest {
         Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
         Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
 
-        Mockito.doReturn(mockedVotesList).when(mockedNews).getVotes();
-        Mockito.when(mockedNews.getVotes().size()).thenReturn(2);
-        Mockito.when(Mockito.spy(mockedNews.getVotes())).thenReturn(mockedVotesList);
+        Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
+        Mockito.when(mockedNews.getLikes().size()).thenReturn(2);
+        Mockito.when(Mockito.spy(mockedNews.getLikes())).thenReturn(mockedVotesList);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/news/{id}/comment", EXISTING_ENTITY_ID)
@@ -205,9 +205,9 @@ public class NewsControllerTest {
         Mockito.when(mockedNews.getNewsCategory()).thenReturn(mockedNewsCategory);
         Mockito.when(mockedNews.getNewsCategory().getName()).thenReturn(STRING_PLACEHOLDER);
 
-        Mockito.doReturn(mockedVotesList).when(mockedNews).getVotes();
-        Mockito.when(mockedNews.getVotes().size()).thenReturn(2);
-        Mockito.when(Mockito.spy(mockedNews.getVotes())).thenReturn(mockedVotesList);
+        Mockito.doReturn(mockedVotesList).when(mockedNews).getLikes();
+        Mockito.when(mockedNews.getLikes().size()).thenReturn(2);
+        Mockito.when(Mockito.spy(mockedNews.getLikes())).thenReturn(mockedVotesList);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/news/{id}/comment", EXISTING_ENTITY_ID)
