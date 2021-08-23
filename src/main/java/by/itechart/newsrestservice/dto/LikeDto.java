@@ -11,9 +11,8 @@ import lombok.Data;
 public class LikeDto {
     private Long id;
     private String username;
-    private boolean isDownvoted;
 
     public static LikeDto getLikeDto(Like like){
-        return new LikeDto(like.getId(), like.getUser().getUsername(), like.isDownvoted());
+        return new LikeDto(like.getId(), like.getUser().getUsername());
     }
 }

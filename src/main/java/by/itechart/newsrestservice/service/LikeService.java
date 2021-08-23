@@ -33,13 +33,12 @@ public class LikeService {
         Like like = new Like();
         like.setUser(user);
         like.setNews(news);
-        like.setDownvoted(false);
         likeRepository.save(like);
     }
 
 
-    public int getNewsRating(Long id) {
-        return likeRepository.getRating(id);
+    public int getTotalLikes(Long id) {
+        return likeRepository.getTotalLikes(id);
     }
 
     public Like findVoteByUserId(Long id) {
