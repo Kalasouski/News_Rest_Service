@@ -26,7 +26,7 @@ public class NewsDto {
         newsDto.setContent(news.getContent());
         newsDto.setCategory(news.getNewsCategory().getName());
         newsDto.setComments(news.getComments().stream().map(CommentDto::getCommentDto).collect(Collectors.toList()));
-        newsDto.setVotes(news.getVotes().size());
+        newsDto.setVotes(news.getLikes().size());
         return newsDto;
     }
 

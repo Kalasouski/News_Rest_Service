@@ -42,6 +42,6 @@ public class News {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "news")
-    private List<Vote> votes;
+    private List<Like> likes;
 
 }
