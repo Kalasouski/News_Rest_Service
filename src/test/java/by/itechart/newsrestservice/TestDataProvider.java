@@ -1,17 +1,17 @@
 package by.itechart.newsrestservice;
 
-import by.itechart.newsrestservice.dto.NewsDto;
-import by.itechart.newsrestservice.entity.Comment;
-import by.itechart.newsrestservice.entity.Like;
-import by.itechart.newsrestservice.entity.News;
-import by.itechart.newsrestservice.entity.NewsCategory;
+import by.itechart.newsrestservice.dto.NewsToSaveDto;
+import by.itechart.newsrestservice.entity.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 public class TestDataProvider {
 
     public static final long EXISTING_ENTITY_ID = 1L;
@@ -20,38 +20,61 @@ public class TestDataProvider {
 
     public static final String STRING_PLACEHOLDER = "testStringForAnyField";
 
-    public static final int DEFAULT_PAGE_NUMBER = 3;
+    public static final int DEFAULT_PAGE_NUMBER = 1;
 
-    public static final Timestamp DEFAULT_TIMESTAMP = new Timestamp(191919);
-
-    public static final News NEWS = new News();
-
-    public static final List<Like> LIKES_LIST = new ArrayList<>();
-
-    public static final List<News> NEWS_LIST = new ArrayList<>();
-
-    public static final List<NewsDto> NEWS_DTO_LIST = new ArrayList<>();
-
-    public static final List<Comment> COMMENTS_LIST = new ArrayList<>();
-
-    public static final NewsCategory NEWS_CATEGORY = new NewsCategory();
+    public static User testUser;
+    public static Comment testComment;
+    public static List<Comment> testCommentsList;
+    public static NewsCategory testNewsCategory;
+    public static News testNews;
+    public static Like testLike;
+    public static NewsToSaveDto testNewsToSaveDto;
+    public static List<Like> testLikesList;
+    public static List<News> testNewsList;
 
     public TestDataProvider() {
-        LIKES_LIST.add(new Like());
-        NEWS_LIST.add(NEWS);
-        COMMENTS_LIST.add(new Comment());
-        NEWS_DTO_LIST.add(new NewsDto());
+        testUser = new User();
+        testUser.setUsername(TestDataProvider.STRING_PLACEHOLDER);
+        testUser.setId(TestDataProvider.EXISTING_ENTITY_ID);
 
-        NEWS_CATEGORY.setName(STRING_PLACEHOLDER);
-        NEWS_CATEGORY.setId(EXISTING_ENTITY_ID);
+        testComment = new Comment();
+        testComment.setComment(TestDataProvider.STRING_PLACEHOLDER);
+        testComment.setUser(testUser);
 
-        NEWS.setNewsCategory(NEWS_CATEGORY);
-        NEWS.setHeading(STRING_PLACEHOLDER);
-        NEWS.setContent(STRING_PLACEHOLDER);
-        NEWS.setBrief(STRING_PLACEHOLDER);
-        NEWS.setId(EXISTING_ENTITY_ID);
-        NEWS.setComments(COMMENTS_LIST);
-        NEWS.setCreatedAt(DEFAULT_TIMESTAMP);
-        NEWS.setLikes(LIKES_LIST);
+        testCommentsList = new ArrayList<>();
+        testCommentsList.add(testComment);
+
+        testNewsCategory = new NewsCategory();
+        testNewsCategory.setName(TestDataProvider.STRING_PLACEHOLDER);
+        testNewsCategory.setId(EXISTING_ENTITY_ID);
+
+        testNews = new News();
+
+        testLike = new Like();
+        testLike.setUser(testUser);
+        testLike.setId(EXISTING_ENTITY_ID);
+        testLike.setNews(testNews);
+
+        testLikesList = new ArrayList<>();
+        testLikesList.add(testLike);
+
+        testNews.setNewsCategory(testNewsCategory);
+        testNews.setHeading(TestDataProvider.STRING_PLACEHOLDER);
+        testNews.setId(EXISTING_ENTITY_ID);
+        testNews.setComments(testCommentsList);
+        testNews.setLikes(testLikesList);
+        testNews.setContent(STRING_PLACEHOLDER);
+        testNews.setBrief(STRING_PLACEHOLDER);
+
+        testNewsList = new ArrayList<>();
+        testNewsList.add(testNews);
+
+        testNewsToSaveDto = new NewsToSaveDto();
+        testNewsToSaveDto.setHeading(TestDataProvider.STRING_PLACEHOLDER);
+        testNewsToSaveDto.setBrief(TestDataProvider.STRING_PLACEHOLDER);
+        testNewsToSaveDto.setContent(TestDataProvider.STRING_PLACEHOLDER);
+        testNewsToSaveDto.setCategoryId(EXISTING_ENTITY_ID);
     }
+
+
 }
