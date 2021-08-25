@@ -1,6 +1,6 @@
 package by.itechart.newsrestservice.controller;
 
-import by.itechart.newsrestservice.TestDataProvider;
+import by.itechart.newsrestservice.provider.TestDataProvider;
 import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.Like;

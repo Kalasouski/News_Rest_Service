@@ -1,17 +1,13 @@
-package by.itechart.newsrestservice;
+package by.itechart.newsrestservice.provider;
 
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Getter
-@Setter
 public class TestDataProvider {
 
     public static final long EXISTING_ENTITY_ID = 1L;
