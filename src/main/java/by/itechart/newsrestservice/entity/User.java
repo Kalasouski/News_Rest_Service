@@ -1,13 +1,16 @@
 package by.itechart.newsrestservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
     @Id

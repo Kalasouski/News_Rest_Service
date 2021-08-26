@@ -3,9 +3,15 @@ package by.itechart.newsrestservice.dto;
 import by.itechart.newsrestservice.entity.Role;
 import by.itechart.newsrestservice.entity.Status;
 import by.itechart.newsrestservice.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationRequestDto {
     private String username;
     private String password;
