@@ -1,10 +1,6 @@
 package by.itechart.newsrestservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,9 +8,9 @@ import java.util.List;
 @Entity
 @Data
 @Builder
-@Table(name = "users")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +34,9 @@ public class User {
     @Column(name = "status")
     private Status status;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<Like> likes;
 }
