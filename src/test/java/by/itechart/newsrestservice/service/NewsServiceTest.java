@@ -1,14 +1,11 @@
 package by.itechart.newsrestservice.service;
 
-import by.itechart.newsrestservice.TestDataProvider;
+import by.itechart.newsrestservice.provider.TestDataProvider;
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.repository.NewsCategoryRepository;
 import by.itechart.newsrestservice.repository.NewsRepository;
-import by.itechart.newsrestservice.security.JwtTokenProvider;
-import by.itechart.newsrestservice.security.UserDetailsImpl;
-import by.itechart.newsrestservice.security.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
@@ -16,21 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @SpringBootTest
-@WithUserDetails(value = "admin")
+@WithUserDetails(value = "josh")
 class NewsServiceTest {
 
     @MockBean
@@ -42,7 +35,6 @@ class NewsServiceTest {
     @Autowired
     private NewsService newsService;
 
-
     @Test
     public void whenGetRequestToAllNewsIsPerformed_thenListOfNewsDtoShouldBeReturned() {
         Page<News> pages = new PageImpl<>(TestDataProvider.testNewsList);
@@ -51,20 +43,16 @@ class NewsServiceTest {
 
         List<NewsDto> result = newsService.getNews(TestDataProvider.DEFAULT_PAGE_NUMBER);
 
-        assertEquals(1, result.size());
-        assertEquals(TestDataProvider.STRING_PLACEHOLDER, result.get(0).getHeading());
-        assertEquals(1L, result.get(0).getId());
+        assertEquals(List.of(NewsDto.getNewsDto(TestDataProvider.testNews)),result);
     }
 
     @Test
     public void givenGetRequestToFindNewsById_whenIdIsValid_thenNewsShouldBeReturned() {
         given(newsRepository.findById(anyLong())).willReturn(java.util.Optional.of(TestDataProvider.testNews));
-        given(newsCategoryRepository.findById(anyLong())).willReturn(Optional.of(TestDataProvider.testNewsCategory));
 
         News foundNews = newsService.findById(TestDataProvider.EXISTING_ENTITY_ID);
 
-        assertEquals(1, foundNews.getId());
-        assertEquals(TestDataProvider.STRING_PLACEHOLDER, foundNews.getHeading());
+        assertEquals(TestDataProvider.testNews,foundNews);
     }
 
     @Test

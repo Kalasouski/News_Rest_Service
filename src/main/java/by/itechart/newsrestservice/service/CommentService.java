@@ -18,12 +18,12 @@ public class CommentService {
         this.userService = userService;
     }
 
-    public void addComment(News news, CommentDto commentDto) {
+    public Comment addComment(News news, CommentDto commentDto) {
         Comment comment = new Comment();
         comment.setComment(commentDto.getComment());
         comment.setNews(news);
         comment.setUser(userService.getCurrentUserByUsername());
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     public void deleteById(Long id) {

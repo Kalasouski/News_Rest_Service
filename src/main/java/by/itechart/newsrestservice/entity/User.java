@@ -1,6 +1,5 @@
 package by.itechart.newsrestservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,11 +34,9 @@ public class User {
     @Column(name = "status")
     private Status status;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<Like> likes;
 }
