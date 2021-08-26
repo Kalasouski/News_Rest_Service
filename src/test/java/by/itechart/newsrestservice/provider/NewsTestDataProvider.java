@@ -4,8 +4,8 @@ import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,47 +49,50 @@ public class NewsTestDataProvider {
 
     public static final List<News> DUMMY_NEWS_LIST = generateNewsList();
 
-    public static User generateUser() {
+    private static User generateUser() {
         return User.builder()
                 .username(DEFAULT_USERNAME)
                 .id(EXISTING_ENTITY_ID)
                 .build();
     }
 
-    public static Comment generateComment() {
+    private static Comment generateComment() {
         return Comment.builder()
                 .comment(STRING_PLACEHOLDER)
                 .user(DUMMY_USER)
                 .build();
     }
 
-    public static List<Comment> generateCommentList() {
+    private static List<Comment> generateCommentList() {
         List<Comment> commentList = new ArrayList<>();
         commentList.add(DUMMY_COMMENT);
         return commentList;
     }
 
-    public static NewsCategory generateNewsCategory() {
+    private static NewsCategory generateNewsCategory() {
         NewsCategory newsCategory = new NewsCategory();
         newsCategory.setName(DEFAULT_NEWS_CATEGORY_NAME);
         newsCategory.setId(EXISTING_ENTITY_ID);
         return newsCategory;
     }
 
-    public static News generateNews() {
+    private static News generateNews() {
         News news = new News();
         news.setNewsCategory(DUMMY_NEWS_CATEGORY);
         news.setHeading(DEFAULT_NEWS_HEADING);
         news.setId(EXISTING_ENTITY_ID);
         news.setComments(DUMMY_COMMENT_LIST);
-        news.setLikes(DUMMY_LIKE_LIST);
+        news.setLikes(new ArrayList<>() {{
+            add(DUMMY_LIKE);
+        }});
         news.setContent(DEFAULT_NEWS_CONTENT);
         news.setBrief(DEFAULT_NEWS_BRIEF);
+        news.setCreatedAt(new Timestamp(191919));
         return news;
 
     }
 
-    public static Like generateLike() {
+    private static Like generateLike() {
         Like like = new Like();
         like.setUser(DUMMY_USER);
         like.setId(EXISTING_ENTITY_ID);
@@ -97,19 +100,19 @@ public class NewsTestDataProvider {
         return like;
     }
 
-    public static List<Like> generateLikeList() {
+    private static List<Like> generateLikeList() {
         List<Like> likes = new ArrayList<>();
         likes.add(DUMMY_LIKE);
         return likes;
     }
 
-    public static List<News> generateNewsList() {
+    private static List<News> generateNewsList() {
         List<News> newsList = new ArrayList<>();
         newsList.add(DUMMY_NEWS);
         return newsList;
     }
 
-    public static NewsToSaveDto generateNewsToSaveDto() {
+    private static NewsToSaveDto generateNewsToSaveDto() {
         return NewsToSaveDto.builder()
                 .heading(DEFAULT_NEWS_HEADING)
                 .brief(DEFAULT_NEWS_BRIEF)
