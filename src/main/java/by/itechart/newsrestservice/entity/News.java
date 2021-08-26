@@ -2,16 +2,17 @@ package by.itechart.newsrestservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "news")
 public class News {
     @Id
@@ -23,10 +24,6 @@ public class News {
     private String brief;
 
     private String content;
-
-//    @Enumerated(value = EnumType.STRING)
-//    @Column(name = "category")
-//    private NewsCategoryEnum category;
 
     @JsonBackReference
     @ManyToOne
