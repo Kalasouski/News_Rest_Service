@@ -2,25 +2,20 @@ package by.itechart.newsrestservice.service;
 
 import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.entity.Comment;
-import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.provider.CommentServiceTestDataProvider;
-
-import by.itechart.newsrestservice.provider.TestDataProvider;
 import by.itechart.newsrestservice.repository.CommentRepository;
 import org.junit.jupiter.api.Test;
-
-import static org.mockito.BDDMockito.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.*;
 
 @SpringBootTest
 @WithUserDetails(value = "josh")
