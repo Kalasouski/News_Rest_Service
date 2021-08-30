@@ -32,6 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http
                 .httpBasic().disable()
                 .csrf().disable()
+                .cors()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -44,6 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:8080/")
+                .allowedOrigins("http://localhost:3000/")
+                .allowedMethods("*")
+                .allowCredentials(true);
     }
 }
