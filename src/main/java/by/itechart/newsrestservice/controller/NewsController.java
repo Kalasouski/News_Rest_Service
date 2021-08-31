@@ -4,11 +4,12 @@ import by.itechart.newsrestservice.dto.CommentDto;
 import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.dto.NewsToResponseDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
+import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.service.CommentService;
+import by.itechart.newsrestservice.service.LikeService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
-import by.itechart.newsrestservice.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +45,11 @@ public class NewsController {
     }
 
     @PostMapping("/news/{id}/comment")
-    public ResponseEntity<NewsDto> postCommentToNews(@PathVariable Long id, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> postCommentToNews(@PathVariable Long id, @RequestBody CommentDto commentDto) {
         News news = newsService.findById(id);
-        commentService.addComment(news, commentDto);
-        NewsDto newsDto = NewsDto.getNewsDto(news);
-        return new ResponseEntity<>(newsDto, HttpStatus.OK);
+        Comment comment = commentService.addComment(news, commentDto);
+        CommentDto responseCommentDto = CommentDto.getCommentDto(comment);
+        return new ResponseEntity<>(responseCommentDto, HttpStatus.OK);
     }
 
     @PostMapping("/news")
@@ -79,7 +80,8 @@ public class NewsController {
     public ResponseEntity<Integer> likeNews(@PathVariable Long id) {
         News news = newsService.findById(id);
         likeService.voteForNews(news);
-        return new ResponseEntity<>(likeService.getTotalLikes(id), HttpStatus.OK);
+        int totalLikes = likeService.getTotalLikes(id);
+        return new ResponseEntity<>(totalLikes, HttpStatus.OK);
     }
 
     @DeleteMapping("/news/{news_id}/comment/{id}")
