@@ -34,7 +34,7 @@ public class News {
     private Timestamp createdAt;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "news")
+    @OneToMany(mappedBy = "news",cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @JsonManagedReference
