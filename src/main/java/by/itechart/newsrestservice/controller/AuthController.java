@@ -1,8 +1,10 @@
 package by.itechart.newsrestservice.controller;
 
 import by.itechart.newsrestservice.dto.AuthenticationRequestDto;
+import by.itechart.newsrestservice.dto.AuthenticationResponseDto;
 import by.itechart.newsrestservice.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,14 +24,14 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<Object> login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
             String username = requestDto.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
             String token = jwtTokenProvider.createToken(username);
-            return ResponseEntity.ok(token);
+            return new ResponseEntity<>(new AuthenticationResponseDto(token, username), HttpStatus.OK);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
 }

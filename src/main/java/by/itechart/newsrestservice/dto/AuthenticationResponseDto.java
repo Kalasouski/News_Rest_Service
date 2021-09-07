@@ -3,7 +3,12 @@ package by.itechart.newsrestservice.dto;
 import lombok.Data;
 
 @Data
-public class AuthenticationRequestDto {
+public class AuthenticationResponseDto {
+    private String accessToken;
     private String username;
-    private String password;
+
+    public AuthenticationResponseDto(String accessToken, String username) {
+        this.accessToken = accessToken;
+        this.username = username;
+    }
 }
