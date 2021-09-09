@@ -6,6 +6,7 @@ import by.itechart.newsrestservice.dto.NewsToResponseDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.Comment;
 import by.itechart.newsrestservice.entity.News;
+import by.itechart.newsrestservice.entity.NewsCategory;
 import by.itechart.newsrestservice.service.CommentService;
 import by.itechart.newsrestservice.service.LikeService;
 import by.itechart.newsrestservice.service.NewsService;
@@ -88,6 +89,12 @@ public class NewsController {
     public ResponseEntity<NewsDto> deleteComment(@PathVariable Long news_id, @PathVariable Long id) {
         commentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/news/category")
+    public ResponseEntity<List<NewsCategory>> getAllNewsCategory() {
+        List<NewsCategory> list = newsService.getNewsCategory();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @ExceptionHandler(NumberFormatException.class)
