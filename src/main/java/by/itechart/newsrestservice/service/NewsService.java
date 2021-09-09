@@ -4,7 +4,6 @@ import by.itechart.newsrestservice.dto.NewsDto;
 import by.itechart.newsrestservice.dto.NewsToSaveDto;
 import by.itechart.newsrestservice.entity.News;
 import by.itechart.newsrestservice.entity.NewsCategory;
-import by.itechart.newsrestservice.exceptions.NotFoundException;
 import by.itechart.newsrestservice.repository.NewsCategoryRepository;
 import by.itechart.newsrestservice.repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +62,9 @@ public class NewsService {
     public List<NewsDto> getNews(Integer pageNo) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         return newsRepository.findAll(paging).stream().map(NewsDto::getNewsDto).collect(Collectors.toList());
+    }
+
+    public List<NewsCategory> getNewsCategory() {
+        return newsCategoryRepository.findAll();
     }
 }
