@@ -1,5 +1,6 @@
 package by.itechart.newsrestservice.security.config;
 
+import by.itechart.newsrestservice.security.AuthEntryPointJwt;
 import by.itechart.newsrestservice.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
+    private AuthEntryPointJwt authEntryPointJwt;
+
+    @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -32,15 +36,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .cors().and()
+                .exceptionHandling().authenticationEntryPoint(authEntryPointJwt).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/login", "/signUp").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
+                .anyRequest().authenticated().and()
                 .apply(new JwtConfig(jwtTokenProvider));
     }
 
