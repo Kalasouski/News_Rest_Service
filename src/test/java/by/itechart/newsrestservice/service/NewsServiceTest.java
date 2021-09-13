@@ -45,7 +45,7 @@ class NewsServiceTest {
 
         given(newsRepository.findAll(ArgumentMatchers.isA(Pageable.class))).willReturn(pages);
 
-        List<NewsDto> result = newsService.getNews(DEFAULT_PAGE_NUMBER);
+        List<NewsDto> result = newsService.getNews(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
 
         assertEquals(1, result.size());
         assertEquals(DEFAULT_NEWS_HEADING, result.get(0).getHeading());
