@@ -5,9 +5,9 @@
 
     <changeSet author="Andrei Dydzik" id="3">
 
-        <createTable tableName="refresh_token">
+        <createTable tableName="refresh_tokens">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="refresh_pkey"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="refresh_tokens_pkey"/>
             </column>
 
             <column name="token" type="VARCHAR">
@@ -19,7 +19,9 @@
             <column name="user_id" type="BIGINT" />
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="refresh_token" baseColumnNames="user_id" constraintName="user_id"
+        <addForeignKeyConstraint baseTableName="refresh_tokens"
+                                 baseColumnNames="user_id"
+                                 constraintName="tokens_users_id_fk"
                                  referencedTableName="users"
                                  referencedColumnNames="id"/>
 
