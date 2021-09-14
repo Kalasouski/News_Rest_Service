@@ -1,15 +1,13 @@
 package by.itechart.newsrestservice.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Data
 @Entity
-@Table(name = "refresh_token")
+@Table(name = "refresh_tokens")
 public class RefreshToken {
 
     @Id
