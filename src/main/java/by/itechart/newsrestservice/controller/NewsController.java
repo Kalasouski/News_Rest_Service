@@ -12,6 +12,7 @@ import by.itechart.newsrestservice.service.LikeService;
 import by.itechart.newsrestservice.service.NewsService;
 import by.itechart.newsrestservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,19 @@ public class NewsController {
     private final LikeService likeService;
     private final UserService userService;
 
+
+
     @GetMapping("/news")
-    public ResponseEntity<List<NewsDto>> getNewsList(@RequestParam(defaultValue = "0") Integer pageNo) {
-        List<NewsDto> list = newsService.getNews(pageNo);
+    public ResponseEntity<List<NewsDto>> getNewsList(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                     @RequestParam(defaultValue = "3") Integer pageSize) {
+        List<NewsDto> list = newsService.getNews(pageNo,pageSize);
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/news/count")
+    public ResponseEntity<Long> getNewsNumber() {
+        Long number = newsService.getNewsNumber();
+        return new ResponseEntity<>(number, HttpStatus.OK);
     }
 
     @GetMapping("/news/{id}")

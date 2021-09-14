@@ -31,6 +31,8 @@ public class NewsTestDataProvider {
 
     public static final int DEFAULT_PAGE_NUMBER = 1;
 
+    public static final int DEFAULT_PAGE_SIZE = 3;
+
     public static final User DUMMY_USER = generateUser();
 
     public static final Comment DUMMY_COMMENT = generateComment();

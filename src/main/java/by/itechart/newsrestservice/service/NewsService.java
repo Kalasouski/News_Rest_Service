@@ -22,10 +22,12 @@ public class NewsService {
     private final NewsRepository newsRepository;
     private final NewsCategoryRepository newsCategoryRepository;
 
-    @Value("${pagination.page_size}")
-    private Integer pageSize;
+
     @Value("${pagination.sort_by}")
     public String sortBy = "createdAt";
+
+    @Value("${pagination.page_size}")
+    private  Integer pageSize;
 
     public News findById(Long id) {
         return newsRepository.findById(id).orElseThrow();
@@ -38,6 +40,10 @@ public class NewsService {
     public void deleteById(Long id) {
         News news = findById(id);
         newsRepository.delete(news);
+    }
+
+    public Long getNewsNumber() {
+        return newsRepository.count();
     }
 
     public List<News> findByCategoryId(Long id) {
@@ -59,7 +65,7 @@ public class NewsService {
         return newsRepository.save(news);
     }
 
-    public List<NewsDto> getNews(Integer pageNo) {
+    public List<NewsDto> getNews(Integer pageNo, Integer pageSize) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         return newsRepository.findAll(paging).stream().map(NewsDto::getNewsDto).collect(Collectors.toList());
     }
