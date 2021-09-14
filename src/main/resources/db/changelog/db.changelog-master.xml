@@ -5,4 +5,5 @@
 
     <include file="src/main/resources/db/changelog/db.initial_schema.xml"/>
     <include file="src/main/resources/db/changelog/db.change_schema_1.xml"/>
+    <include file="src/main/resources/db/changelog/db.change_schema_2.xml"/>
 </databaseChangeLog>
