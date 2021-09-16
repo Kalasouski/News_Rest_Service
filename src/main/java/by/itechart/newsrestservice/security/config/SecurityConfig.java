@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .exceptionHandling().authenticationEntryPoint(authEntryPointJwt).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signUp").permitAll()
+                .antMatchers("/login", "/signUp", "/refreshtoken").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated().and()
                 .apply(new JwtConfig(jwtTokenProvider));

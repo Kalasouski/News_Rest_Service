@@ -3,14 +3,13 @@ package by.itechart.newsrestservice.dto;
 import lombok.Data;
 
 @Data
-public class AuthenticationResponseDto {
+public class RefreshTokenResponseDto {
+
     private String accessToken;
     private String refreshToken;
-    private String username;
 
-    public AuthenticationResponseDto(String accessToken, String refreshToken, String username) {
+    public RefreshTokenResponseDto(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.username = username;
     }
 }
