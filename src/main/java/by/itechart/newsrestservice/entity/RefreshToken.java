@@ -3,7 +3,7 @@ package by.itechart.newsrestservice.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @Data
 @Entity
@@ -18,7 +18,7 @@ public class RefreshToken {
     private String token;
 
     @Column(name = "expiration_date")
-    private Timestamp expirationDate;
+    private Instant expirationDate;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     @Value("${jwt.token.secret}")
     private String secret;
 
-    @Value("${jwt.token.expired}")
+    @Value("${jwt.accesstoken.expired}")
     private long expirationTime;
 
     private final static String TOKEN_PREFIX = "Bearer_";
